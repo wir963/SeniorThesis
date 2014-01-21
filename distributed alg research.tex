@@ -1,0 +1,264 @@
+\documentclass[english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{varioref}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{algorithm2e}
+
+\makeatletter
+
+\usepackage{babel}
+\makeatother
+\begin{document}
+
+\title{Distributed Algorithms for Dynamic Networks}
+
+\maketitle
+\begin{center}\author{Welles Robinson}\end{center}
+\noindent \begin{center}Senior Thesis\par\end{center}
+\noindent \begin{center}Department of Computer
+Science\par\end{center}
+\noindent \begin{center}Georgetown University\par\end{center}
+
+\newtheorem{definition} {Definition}
+\newcommand{\mydef}[1]{\begin{definition}#1\end{definition}}
+
+\begin{abstract}
+Abstract
+\end{abstract}
+
+\section{High-Level Description of Goal}
+The goal of this paper is to simplify the creation of distributed algorithms for dynamic networks by demonstrating that any algorithm that works for the broadcast variant of the synchronous model with a star topology can be made to work for the broadcast variant of the synchronous model with any topology. 
+We will do so by describing a simulation algorithm that, if run on every node in the broadcast model, will match perfectly the output of the nodes of the centrally controlled model.
+
+\section{Models}
+
+Distributed Model
+\begin{enumerate}
+\item We are considering the broadcast variant of the synchronous model, defined with respect to a connected network topology G=(V,E).
+\item The broadcast variant is defined such that a given node has no knowledge of its neighbors but may send a single message per round that all of its neighbors will receive.
+\item Nodes in the network have unique identification numbers (UIDs) and they have knowledge of their own UID. 
+\end{enumerate}
+
+\section{Problem Definition}
+
+\begin{enumerate}
+\item We are considering the main execution to be the distributed model as defined in the Models section with n processes.
+
+\item We are also considering a reference execution of the distributed model with a star topology and n+1 processes. The processes in this reference execution will run a given algorithm A and each process will keep an individual communication log, in which it will write its input and output for every round.
+
+\item The main execution will run some algorithm S, which will take as input A, the algorithm run on the reference execution. The processes in the main execution will keep individual communication logs, which do not have the restriction of those in the reference execution that they must contain the given process' input and ouput for every round.
+
+\item The problem is defined as solved if for the communication log of every process in the main execution, there is at least one identical communication log in the leaf processes of the reference execution and vice-versa.
+
+\end{enumerate}
+
+\section{Algorithm}
+
+\begin{enumerate}
+\item Run unmodified Leader Election without Network Information 
+
+  \begin{enumerate}
+  \item Assume nodes have UIDs (which is also assumed for the distributed model)
+  \item Each process runs Terminating Synchronous Breadth First Search and the node that manages to terminate elects itself leader and tells the other nodes to terminate
+  \end{enumerate}
+
+\item The Simulation
+
+  \begin{enumerate}
+  \item Assume that each and every round of the given algorithm has a finite repetitions of a step, which is comprised of two parts
+    \begin{enumerate}
+    \item The star node sends a broadcast message to all the leaf nodes (Broadcast part)
+    \item All leaf nodes send a receive message to the star node in response to the broadcast message (Receive part)
+    \end{enumerate}
+
+  \item Each step is simulated by the leader node running a modified instance of terminating synchronous BFS
+    \begin{enumerate}
+    \item The search message sent by a parent node to its children nodes is modified to be ``search'' plus the broadcast message, which is dictated by the output of the input algorithm A1
+    \item Upon receiving a search message, a node runs the input algorithm A2 on the broadcast message portion and then creates the receive message portion using the output of A2
+    \item The done message sent by a child node to its parent node is modified to be ``done'' plus both the UID and the receive message of the child node as well as any done messages received by the child node 
+    \item Upon receiving a search message, a node writes the broadcast message portion to its communication log
+    \item Upon sending a done message, a node writes the receive message portion to its communication log
+    \item The leader simulates sending a search message to itself and then simulates sending a done message back to itself
+    \item This algorithm terminates when the leader has received done messages from all of its children and a simulated done message from itself
+    \end{enumerate}
+
+  \end{enumerate}
+
+\end{enumerate}
+
+Static Model - All the nodes turn on at the same time
+
+Simulation Algorithm takes one input, algorithm A, the algorithm to be simulated. Algorithm A can be broken into two distinct algorithms, A1, the algorithm run by the star process, and A2, the algorithm run by the leaf processes.
+
+Member Variables - maxID (UID); parent (UID); totalChildren (int); childCount (int); wait (int);
+Message has a root (a round, the UID); a id of the sender (UID); a type {search, choose, done}; a receiver (UID), defaults to NULL;
+
+\begin{algorithm}[Simulation Algorithm for Static Model]
+  initVariables() \;
+
+  \For { round 1 ... r }{
+
+    \For{each message m in Inbox}{
+
+      \If{ m.maxID > maxID }
+      {
+        updateMaxRoot() \;
+
+      }
+      \If{ m.maxID == maxID }
+      {
+        \If{ m.type == choose AND receiver == myUID}
+        {
+          childCount++ \;
+          totalChildren++ \;
+        }
+        \If{ m.type == done AND receiver == myUID}
+        {
+          % One of your children is done
+          childCount-- \; 
+          \If{childCount == 0} 
+          {
+            sendDoneMsg() \;
+          }
+        }
+      }
+      \If { m.maxID < maxID }
+      {
+        % You need to tell the node that sent you the message to update their highestID
+        msg = (type=search, sender=myUID, maxID=maxID) ) \;
+        Outbox.enqueue(msg) \;
+      }
+    } %end of For each message in Inbox loop
+
+    \If {wait != 0 AND childCount == 0} {
+      wait-- \;
+      \If {wait == 0} {
+        sendDoneMsg() \;
+      }
+    }
+
+    \For{each message m in Outbox}{
+      broadcast(m)\;
+    } % end of For each message in Outbox loop
+
+    myRound++ \; % increment the round
+  } % end of For round 1...r loop
+  \caption{Simulation Algorithm for Static Model}
+\end{algorithm}
+
+\begin{algorithm}[initVariables]
+  myRound == 0 \; 
+  maxID = myUID \; 
+  message m = (type=search, sender=myUID, maxID=maxID) \;
+  \caption{initVariables method}
+\end{algorithm}
+
+\begin{algorithm}[updateMaxRoot]
+  maxID = m.maxID\; % update maxRoot
+  parent = m.sender\; % choose the sender as your parent
+  childCount = totalChildren = 0; % reset the children counter
+  msg1 = (type=choose, sender=myUID, maxID=maxID, receiver=m.sender) \; % send msg to parent selecting them
+  Outbox.enqueue(msg1) \;
+  msg2 = (type=search, sender=myUID, maxID=maxID) \; % forward the msg to all neighbors
+  Outbox.enqueue(msg2) \;
+  wait = 3 \; % 3 is the number of rounds to wait for receiving a choose msg
+  \caption{updateMaxRoot method}
+\end{algorithm}
+
+\begin{algorithm} [sendDoneMsg]
+  msg = ( type=done, sender=myUID, maxID=maxID ) \;
+  Outbox.enqueue( msg ) \;
+  \caption{sendDoneMsg method}
+\end{algorithm}
+
+
+
+Dynamic Addition Model - Nodes turn on at various times but they don't turn off 
+The leader elected will be the node with the highest UID out of all of the nodes that turned on at round 1
+
+Variables - maxRoot - (a round, the UID); parent (UID); totalChildren (int); childCount (int); wait (int);
+Message has a root (a round, the UID); a id of the sender (UID); a type {search, choose, done}; a receiver (UID);
+
+\begin{algorithm}[Simulation Algorithm for Dynamic Addition Model]
+  initVariables() \;
+
+  \For { round 1...r }{
+    \For{each message m in Inbox}{
+      \If{ m.root > maxRoot }
+      {
+        updateMaxRoot() \;
+      }
+      \If{ m.root == maxRoot }
+      {
+        \If{ m.type == choose AND receiver == myUID}
+        {
+          childCount++ \;
+          totalChildren++ \;
+        }
+        \If{ m.type == done AND receiver == myUID}
+        {
+          % One of your children is done
+          childCount-- \; 
+          \If{childCount == 0} 
+          {
+            sendDoneMsg() \;
+          }
+        }
+      }
+      \If { m.root < maxRoot }
+      {
+        % You need to tell the node that sent you the message to update their highestID
+        msg = (type=search, sender=myUID, root=(r=maxRoot.r+1, id=maxRoot.id) ) \;
+        Outbox.enqueue(msg) \;
+      }
+    } %end of For each message in Inbox loop
+
+    \If {wait != 0 AND childCount == 0} {
+      wait-- \;
+      \If {wait == 0} {
+        sendDoneMsg() \;
+      }
+    }
+    \For{each message m in Outbox}{
+      broadcast(m)\;
+    } % end of For each message in Outbox loop
+
+    myRound++ \; % increment the round
+    maxRoot = (r=maxRoot.r+1, id=maxRoot.id) \;
+  } % end of For round 1...r loop
+  \caption{Simulation Algorithm for the Dynamic Addition Model}
+\end{algorithm}
+
+\begin{algorithm}[initVariables]
+  myRound == 0 \;
+  maxRoot = (r=myRound, sender=myUID) \; 
+  message m = (type=search, id=myUID, root=maxRoot) \;
+  \caption{initVariables method for Dynamic Addition Model}
+\end{algorithm}
+
+\begin{algorithm}
+  maxRoot = m.root\; % update maxRoot
+  parent = m.sender\; % choose the sender as your parent
+  childCount = totalChildren = 0; % reset the children counter
+  msg1 = (type=choose, sender=myUID, root=(r=maxRoot.r+1, id=maxRoot.id), receiver=m.id) \; % send msg to parent selecting them
+  Outbox.enqueue(msg1) \;
+  msg2 = (type=search, sender=myUID, root=(r=maxRoot.r+1, id=maxRoot.id) ) \; % forward the msg to all neighbors
+  Outbox.enqueue(msg2) \;
+  wait = 3 \; % 3 is the number of rounds to wait for receiving a choose msg
+  \caption{updateMaxRoot method for Dynamic Addition Model}
+\end{algorithm}
+
+\begin{algorithm}
+  msg = ( type=done, sender=myUID, root=(r=maxRoot.r+1, id=maxRoot.id), receiver=parent ) \;
+  Outbox.enqueue( msg ) \;
+  \caption{sendDoneMsg method for Dynamic Addition Model}
+\end{algorithm}
+
+\bibliographystyle{abbrev}
+\bibliography{name-of-bib file}
+
+\end{document}
+
