@@ -5,6 +5,7 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage{algorithm2e}
 
 \makeatletter
@@ -174,6 +175,58 @@ Message has a root (a round, the UID); a id of the sender (UID); a type {search,
   \caption{sendDoneMsg method}
 \end{algorithm}
 
+\begin{algorithm} [Static Simulation Algorithm]
+  \For {each action in A1} {
+    %
+    \If{ leader == true } {
+      % leader must send out the message and prepare its own response and log it
+      message = (type=r.action, sender=myUID) \;
+      broadcast ( message ) \;
+      msg = ( response to message ) \;
+      commLog.write (response to message) \;
+    }
+    \For {each round r}{
+      \For{each message m in Inbox} {
+        \If {m.sender == parent} {
+          % parent sent you a message
+          forwardMsgToChildren( ) \;
+        }
+        \If {m.receiver == myUID} {
+          % child sent you a message
+          add m to msg \;
+          childCount-- \;
+          \If {childCount == 0} {
+            Outbox.enqueue(msg) \;
+            % equeue your messasge if no more remaining children
+            % need to do something here for the leader
+          }
+        }
+      } % end of for each message in inbox
+      \For {each message m in Outbox} {
+        broadcast(m) \;
+      }
+    }
+  }
+  \caption{Static Simulation Algorithm}
+\end{algorithm}
+
+\begin{algorithm} [forwardMsgToChildren]
+  msg = (response to m, receiver = parent) \;
+  commLog.write(response to m) \;
+  % if no children, then enqueue response to send immediately
+  \eIf {totalChildren == 0} {
+    Outbox.enqueue(msg) \;
+  } { % o/w send the msg to your children
+    forwardMsg = (type = m.type, sender=myUID) \;
+    Outbox.enqueue(forwardMsg) \;
+  }
+  \caption{forwardMsgToChildren}
+\end{algorithm}
+
+This is the proof
+\begin{proof}
+  Let this proof work please!
+\end{proof}
 
 
 Dynamic Addition Model - Nodes turn on at various times but they don't turn off 
