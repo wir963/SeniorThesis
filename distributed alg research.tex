@@ -225,6 +225,7 @@ Message has a root (a round, the UID); a id of the sender (UID); a type {search,
 
 
 \begin{proof} of Safety in the Static Model
+
   Let Umax = the process with the maximum UID  \\
   For any node not Umax there is at least one node with a greater UID \\
   For a node to elect itself leader, it must create a breadth-first tree that successfully terminates \\
@@ -232,6 +233,16 @@ Message has a root (a round, the UID); a id of the sender (UID); a type {search,
   n1 will, by definition of the algorithm, respond with a search message. \\
   Once n receives a search message from n1, it will cease running its current BFS instance and will start running the BFS instance of n1. \\
   As a result, bfs1 will never terminate because n, which was a member of the tree of bfs1, will never respond done to its parent. \\
+
+\end{proof}
+
+\begin{proof} of Liveness in the Static Model
+
+  Let Umax = the process with the maximum UID  \\
+  After one round, every neighbor (defined as every process within broadcast range) of Umax will have received Umax’s ID and will, by definition, set its variable maxID equal to Umax’s UID and be running an instance of BFS with source = Umax \\
+  After round r, every process within r hops of Umax will be running an instance of BFS with source = Umax where r is the maximum number of hops of any node away from Umax \\
+  Now, every node in the network will be running an instance of BFS with source = Umax \\
+  Eventually, BFS will terminate and Umax will set its leader variable=true \\
 
 \end{proof}
 
