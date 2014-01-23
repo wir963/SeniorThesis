@@ -122,7 +122,7 @@ Message has a root (a round, the UID); a id of the sender (UID); a type {search,
           childCount-- \; 
           \If{childCount == 0} 
           {
-            sendDoneMsg() \;
+            sendDoneMsg( ) \;
           }
         }
       }
@@ -137,7 +137,7 @@ Message has a root (a round, the UID); a id of the sender (UID); a type {search,
     \If {wait != 0 AND childCount == 0} {
       wait-- \;
       \If {wait == 0} {
-        sendDoneMsg() \;
+        sendDoneMsg( ) \;
       }
     }
 
@@ -223,9 +223,16 @@ Message has a root (a round, the UID); a id of the sender (UID); a type {search,
   \caption{forwardMsgToChildren}
 \end{algorithm}
 
-This is the proof
-\begin{proof}
-  Let this proof work please!
+
+\begin{proof} of Safety in the Static Model
+  Let Umax = the process with the maximum UID  \\
+  For any node not Umax there is at least one node with a greater UID \\
+  For a node to elect itself leader, it must create a breadth-first tree that successfully terminates \\
+  For the breadth-first search instance source from any node, n, not equal to Umax, it will send a search message to a node, n1, that is running a BFS instance, bfs1, with a  greater source UID than n \\
+  n1 will, by definition of the algorithm, respond with a search message. \\
+  Once n receives a search message from n1, it will cease running its current BFS instance and will start running the BFS instance of n1. \\
+  As a result, bfs1 will never terminate because n, which was a member of the tree of bfs1, will never respond done to its parent. \\
+
 \end{proof}
 
 
