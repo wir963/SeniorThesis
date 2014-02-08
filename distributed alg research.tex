@@ -336,20 +336,18 @@ Message has a root (a round, the UID); a id of the sender (UID); a type {search,
 
 \end{proof}
 
-This is my very basic attempt at a proof of the simulation argument
-Reference Execution
-Round 1 - leader broadcasts a message m - log (message m sent); a given child node receives m - log (message m received)
-Round 2 - the child node processes m and in response, broadcasts message n - log (message n sent); the leader receives n - log (message n received)
-Round 3 - leader processes message n and in response, broadcasts message o - log (message o sent); child node receives o - log (message o received)
 
-Main Execution
-Round 1 - leader broadcasts a message m - log (message m sent); child node, CN, of leader receives message m - log (message m received)
-Round 2 - child node, CN, of leader processes message m and in response, re-broadcasts message m; child node of CN receives message m - log (message m received)
-Round 3 - child node of CN processes message m and in response rebroadcasts message m; children receive message... 
-...
-Round N - child node of CN has received messages from all of its children so it broadcasts message n (its message in response to m) - log (message n sent) 
-Round R (not necessarily N+1) - CN receives messages from all of its children so it broadcasts message n (its message in response to m) - log (message n sent);
-Round Q (not necessarily R+1) - the leader has received message n from all of its children so it broadcasts message o in response - log (message n received, message o sent)
+Step 1: relate rounds of real execution to a single round in the reference execution \;
+Simulation of a round of the reference execution for leader starts when the leader broadcasts its message according to the algorithm and ends when the leader has received messages from all of its children \;
+Simulation of a round of the reference execution for a child node is between when the node broadcasts its message and when the node receives the message from the leader \;
+
+Step 2: Define what it means for the real execution to correctly implement a round of the reference \;
+Successful simulation of the reference execution means that the leader receives the messages from all of the nodes and the nodes receive the message from the leader node \;
+
+Step 3: Assume up until Round R in the reference execution, everything in the main execution has matched everything in the reference execution; prove Round R in the reference execution is correctly simulated \;
+So what happens in round R-1? The CNs all receive their message from the leader and the leader receives a message from every node in the network \;
+In the first round of the rounds of the main execution that simulate round R, the leader broadcasts his message to his children and all of the leaf nodes broadcast their message, which is received by their parent \;
+In the second round, the children of the leader broadcast his message, which is received by their children; the nodes who received messages from all of their children sends their messages to their parents \;
 
 
 
