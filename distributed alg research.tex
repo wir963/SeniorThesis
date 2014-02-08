@@ -370,6 +370,18 @@ In the second round, the children of the leader broadcast his message, which is 
  annote = {This paper addresses the problems around reliable coordination in dynamic, wireless networks. The paper proposes creating a static and reliable abstract layer composed of virtual nodes on top of the unpredictable and unreliable client or physical nodes. The architecture of the emulator is well thought-out and perhaps should be emulated. One key weakness of this approach is the requirement that the locations of the virtual nodes be decided before the start of program execution. This weakness results necessarily from the attempt to model an underlying dynamic network with a perfectly static network. },
 }
 
+% Friedman and Vaysburd
+@inproceedings{Friedman:????,
+ author = Friedman, Roy Vaysburd, Alexey},
+ title = {Fast Replicated State Machines Over Partitionable Networks},
+ location = {Ithaca, NY, USA},
+ pages = {1--8},
+ numpages = {8},
+ publisher = {Department of Computer Science Cornell University},
+ keywords = {replicated state machine approach, partitionable networks},
+ annote = { This paper lays out a faster and more reliable approach to implementing replicated state machines in partitionable networks. The approach is much faster than the pessimistic approach while sacrifing only a little fault-tolerance and much safer than the optimistic approach. The real relevance for my work is how this approach deals with the partitioning of the network, which will be an important in the fully dynamic case. The approach won't be overly relatable because it wants to only allow one partition to truly function and update state while my algorithm wants each partition to be able to function on its own. It requires that a majority of the nodes be in a single network to function, which guarantees the safety of the RSM. },
+}
+
 % Schneider
 @inproceedings{Schneider:1990,
  author = {Schneider, Fred B.},
