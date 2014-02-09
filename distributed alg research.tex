@@ -56,6 +56,22 @@ Distributed Model
 
 \end{enumerate}
 
+\begin{enumerate}
+The Turning-On Only Problem Definition
+
+\item A node may turn on at the beginning of any round of the main execution. The node should wait to perform any actions until the start of the next round of the reference execution.
+
+\item As a result, every node in the network must have some conception of when its reference execution round begins and ends so that it may transmit that information to nodes that turn on during the simulation.
+
+\end{enumerate}
+
+\begin{enumerate}
+The Turning-Off Only Problem Definition
+
+\item A node may turn off at the beginning of any round of the main execution (for now). This means that a node can essentially turn off during the middle of a single round of the reference execution. 
+
+\end{enumerate}
+
 \section{Algorithm}
 
 \begin{enumerate}
