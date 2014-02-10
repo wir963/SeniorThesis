@@ -8,6 +8,11 @@
 \usepackage{amsthm}
 \usepackage{algorithm2e}
 
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
 \makeatletter
 
 \usepackage{babel}
@@ -323,33 +328,43 @@ Message has a root (a round, the UID); a id of the sender (UID); a type {search,
   \caption{sendDoneMsg method for Dynamic Addition Model}
 \end{algorithm}
 
-\section{Proofs}
+\section{Analysis}
 
-\begin{proof} of Leader Election in the Static Model
-
-  This algorithm will eventually elect a leader (see Liveness Proof) \\
-  This algorithm will never elect multiple leaders (see Safety Proof) \\
-
+\begin{lemma}
+\label{LeaderElectionStatic}
+For the given network, a node will eventually set leader to true and no more than one node will have leader set to true at any point. 
+\end{lemma}
+\begin{proof}
+One node will eventually set leader to true (Lemma~\ref{LELivenessStatic}) \\
+No more than one node will have leader set to true at any point (Lemma~\ref{LESafetyStatic}) \\
 \end{proof}
 
-\begin{proof} of Safety in the Static Model
+\begin{definition}
+Let $U_{max}$ equal the process with the maximum UID in the network  \\
+\end{definition}
 
-  Let Umax = the process with the maximum UID  \\
-  For the breadth-first search instance with source = any node n not equal to Umax, it will send a search message to a node, n1, that is running a BFS instance, bfs1, with source \textgreater n \\
-  n1 will, by definition of the algorithm, respond with a search message. \\
-  Once n receives a search message from n1, it will cease running its current BFS instance and will start running the BFS instance of n1. \\
-  As a result, bfs1 will never terminate because n, which was a member of the tree of bfs1, will never respond done to its parent and n will not elect itself leader. \\
+\begin{lemma}
+\label{LESafetyStatic}
+No more than one node will have leader set to true at any point.
+\end{lemma}
+\begin{proof}
 
+  Any breadth-first search instance, $bfs$ with source equal to a node $n$ where $n$ is not equal to $U_{max}$ will send a search message to a node, $n_1$, that is running a BFS instance, $bfs_1$, whose source is \textgreater $n$ \\
+  By definition of the algorithm, $n_1$ will respond with a search message. \\
+  Once $n$ receives a search message from $n_1$, it will cease running the $bfs$ instance and will start running $bfs_1$, the BFS instance run by $n_1$. \\
+  As a result, $bfs_1$ will never terminate because a node in its tree will never send a done message to its parent. Therefore, $n$ will not set leader to true. \\
 \end{proof}
 
-\begin{proof} of Liveness in the Static Model
+\begin{lemma}
+\label{LELivenessStatic}
+One node will eventually set its variable leader to true.
+\end{lemma}
+\begin{proof}
 
-  Let Umax = the process with the maximum UID  \\
-  After one round, every neighbor (defined as every process within broadcast range) of Umax will have received the ID of Umax and will, by definition, set its variable maxID equal to ID of Umax and be running an instance of BFS with source = Umax \\
-  After round r, every process within r hops of Umax will be running an instance of BFS with source = Umax where r is the maximum number of hops of any node away from Umax \\
-  Now, every node in the network will be running an instance of BFS with source = Umax \\
-  Eventually, BFS will terminate and Umax will set its leader variable=true \\
-
+After one round, every neighbor of $U_{max}$ will have received the ID of $U_{max}$, will have its variable maxID equal to ID of $U_{max}$ and be running an instance of BFS with source = $U_{max}$ \\
+After round r, every process within r hops of $U_{max}$ will be running an instance of BFS with source = $U_{max}$ where r is the maximum number of hops of any node away from $U_{max}$ \\
+Now, every node in the network will be running an instance of BFS with source = $U_{max}$ \\
+Eventually, BFS will terminate and $U_{max}$ will set its leader variable=true \\
 \end{proof}
 
 
