@@ -45,7 +45,7 @@ Distributed Model
 \begin{enumerate}
 \item We are considering the broadcast variant of the synchronous model, defined with respect to a connected network topology G=(V,E).
 \item The broadcast variant is defined such that a given node has no knowledge of its neighbors but may send a single message per round that all of its neighbors will receive.
-\item Nodes in the network have unique identification numbers (UIDs) and they have knowledge of their own UID. 
+\item Nodes in the network have comparable unique identification numbers (UIDs) and they have knowledge of their own UID. 
 \end{enumerate}
 
 \section{Problem Definition}
@@ -349,22 +349,31 @@ For every round r, at most one node has leader = true at the beginning of round 
 \end{lemma}
 \begin{proof}
 
-A node $v$ will only set leader = true if and only if the breadth-first search tree $b$, where source($b$) == id($v$), terminates. \\
+A node $v$ will only set leader = true if the breadth-first search (BFS) tree $b$, where sourceID($b$) == id($v$), terminates.
 
-A breadth-first search tree $b$ will only terminate if source_id($b$) == id($u_{max}$). \\
+A BFS tree $b$ will only terminate if sourceID($b$) == id($u_{max}$) (Lemma~\ref{BFSTermination})
 
-Given a breadth-first search tree $c$ where source_id($c$) \textless id($u_{max}$). \\
+Only one node, $u_{max}$, will elect itself leader. 
 
-$c$ will eventually send a search message to a node $v$ running a breadth-first tree $d$ where source_id($d$) \textgreater source_id($c$). \\
+\end{proof}
 
-$w$ is the node in $c$ that will send the search message to $x$. \\
+\begin{lemma}
+\label{BFSTermination}
+A BFS tree $b$ will only terminate if sourceID($b$) == id($u_{max}$)
+\end{lemma}
 
-By definition of the algorithm, node $x$ will respond with a search message where ID == source_id($d$). \\
+\begin{proof}
+Given a BFS tree $c$ where sourceID($c$) \textless  id($u_{max}$), $c$ will eventually send a search message to a node $x$ running a BFS tree $d$ where sourceID($d$) \textgreater  sourceID($c$).
 
-$w$ receives a search message sent by $x$. $w$ ceases running $c$ and starts running $d$ because source_id($d$) \textgreater source_id($c$). \\
+$w$ is the node in $c$ that will send the search message to $x$.
 
-$c$ will never terminate because $w$ will never send a done message to its parent. Therefore, the node with ID == source_id($c$) will not set leader to true. \\
+By definition of the algorithm, node $x$ will respond with a search message where ID == sourceID($d$).
 
+When $w$ receives the search message sent by $x$, it ceases running $c$ and starts running $d$ because sourceID($d$) \textgreater sourceID($c$).
+
+As a result, $w$ will never send a done message to its parent in $c$.
+
+Therefore, $c$ will never terminate.
 \end{proof}
 
 \begin{lemma}
