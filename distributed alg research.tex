@@ -340,19 +340,31 @@ No more than one node will have leader set to true at any point (Lemma~\ref{LESa
 \end{proof}
 
 \begin{definition}
-Let $U_{max}$ equal the process with the maximum UID in the network  \\
+Let $u_{max}$ equal the process with the maximum UID in the network  \\
 \end{definition}
 
 \begin{lemma}
 \label{LESafetyStatic}
-No more than one node will have leader set to true at any point.
+For every round r, at most one node has leader = true at the beginning of round r.
 \end{lemma}
 \begin{proof}
 
-  Any breadth-first search instance, $bfs$ with source equal to a node $n$ where $n$ is not equal to $U_{max}$ will send a search message to a node, $n_1$, that is running a BFS instance, $bfs_1$, whose source is \textgreater $n$ \\
-  By definition of the algorithm, $n_1$ will respond with a search message. \\
-  Once $n$ receives a search message from $n_1$, it will cease running the $bfs$ instance and will start running $bfs_1$, the BFS instance run by $n_1$. \\
-  As a result, $bfs_1$ will never terminate because a node in its tree will never send a done message to its parent. Therefore, $n$ will not set leader to true. \\
+A node $v$ will only set leader = true if and only if the breadth-first search tree $b$, where source($b$) == id($v$), terminates. \\
+
+A breadth-first search tree $b$ will only terminate if source_id($b$) == id($u_{max}$). \\
+
+Given a breadth-first search tree $c$ where source_id($c$) \textless id($u_{max}$). \\
+
+$c$ will eventually send a search message to a node $v$ running a breadth-first tree $d$ where source_id($d$) \textgreater source_id($c$). \\
+
+$w$ is the node in $c$ that will send the search message to $x$. \\
+
+By definition of the algorithm, node $x$ will respond with a search message where ID == source_id($d$). \\
+
+$w$ receives a search message sent by $x$. $w$ ceases running $c$ and starts running $d$ because source_id($d$) \textgreater source_id($c$). \\
+
+$c$ will never terminate because $w$ will never send a done message to its parent. Therefore, the node with ID == source_id($c$) will not set leader to true. \\
+
 \end{proof}
 
 \begin{lemma}
