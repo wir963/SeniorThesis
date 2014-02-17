@@ -330,62 +330,56 @@ Message has a root (a round, the UID); a id of the sender (UID); a type {search,
 
 \section{Analysis}
 
+
+
 \begin{lemma}
 \label{LeaderElectionStatic}
-For the given network, a node will eventually set leader to true and no more than one node will have leader set to true at any point. 
+For the given network, a node will eventually set leader to true and no more than one node will have leader equal to true at the beginning of any round $r$. 
 \end{lemma}
 \begin{proof}
-One node will eventually set leader to true (Lemma~\ref{LELivenessStatic}) \\
-No more than one node will have leader set to true at any point (Lemma~\ref{LESafetyStatic}) \\
+One node will eventually set leader to true (Lemma~\ref{LELivenessStatic}).
+No more than one node will have leader set to true at any point (Lemma~\ref{LESafetyStatic}).
 \end{proof}
 
 \begin{definition}
-Let $u_{max}$ equal the process with the maximum UID in the network  \\
+Let $u_{max}$ be the ID of the process with the maximum UID in the network. 
+Let BFS instance $b_i$ refer to an instance of the terminating breadth-first search protocol initiated by process with ID i.
 \end{definition}
 
 \begin{lemma}
 \label{LESafetyStatic}
-For every round r, at most one node has leader = true at the beginning of round r.
+For every round $r$, at most one node has leader = true at the beginning of round $r$.
 \end{lemma}
 \begin{proof}
 
-A node $v$ will only set leader = true if the breadth-first search (BFS) tree $b$, where sourceID($b$) == id($v$), terminates.
-
-A BFS tree $b$ will only terminate if sourceID($b$) == id($u_{max}$) (Lemma~\ref{BFSTermination})
-
-Only one node, $u_{max}$, will elect itself leader. 
+A node with ID $i$ will only set leader = true if the BFS instance $b_i$ terminates.
+A BFS tree $b_i$ will terminate only if $i$ equals $u_{max}$ (Lemma~\ref{BFSTermination}).
+Only the process with ID $u_{max}$, will set leader = true. 
 
 \end{proof}
 
 \begin{lemma}
 \label{BFSTermination}
-A BFS tree $b$ will only terminate if sourceID($b$) == id($u_{max}$)
+  A BFS instance $b_i$ will only terminate if $i$ equals $u_{max}$.
 \end{lemma}
 
 \begin{proof}
-Given a BFS tree $c$ where sourceID($c$) \textless  id($u_{max}$), $c$ will eventually send a search message to a node $x$ running a BFS tree $d$ where sourceID($d$) \textgreater  sourceID($c$).
-
-$w$ is the node in $c$ that will send the search message to $x$.
-
-By definition of the algorithm, node $x$ will respond with a search message where ID == sourceID($d$).
-
-When $w$ receives the search message sent by $x$, it ceases running $c$ and starts running $d$ because sourceID($d$) \textgreater sourceID($c$).
-
-As a result, $w$ will never send a done message to its parent in $c$.
-
-Therefore, $c$ will never terminate.
+  Termination of a BFS instance $b_j$ requires all other processes in the network to send a done message to the process with ID $j$.
+Given BFS instance $b_j$ where $j$ \textless $u_{max}$, there is at least one process, the process with ID $u_{max}$, that will never reply done to the process with ID $j$. 
+Therefore, $b_j$ will never terminate.
 \end{proof}
 
 \begin{lemma}
 \label{LELivenessStatic}
-One node will eventually set its variable leader to true.
+  One node will eventually set its variable leader to true.
 \end{lemma}
 \begin{proof}
 
-After one round, every neighbor of $U_{max}$ will have received the ID of $U_{max}$, will have its variable maxID equal to ID of $U_{max}$ and be running an instance of BFS with source = $U_{max}$ \\
-After round r, every process within r hops of $U_{max}$ will be running an instance of BFS with source = $U_{max}$ where r is the maximum number of hops of any node away from $U_{max}$ \\
-Now, every node in the network will be running an instance of BFS with source = $U_{max}$ \\
-Eventually, BFS will terminate and $U_{max}$ will set its leader variable=true \\
+  After one round, every neighbor of the process with ID $u_{max}$ will be running BFS instance $b_{u_{max}}$.
+  After round $r$, every process within $r$ hops of the process with ID $u_{max}$ will be running  $b_{u_{max}}$.
+  When $r$ equals the number of hops from the process with ID $u_{max}$ to the furthest node, every node in the network will be running $b_{u_{max}}$.
+  When every node is running $b_{u_{max}}$, it will eventually terminate and the process with ID $u_{max}$ will set leader = true.
+
 \end{proof}
 
 
