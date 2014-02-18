@@ -1,0 +1,41 @@
+% Brown, et al
+@inproceedings{Brown et al:2007,
+ author = {Brown, Matthew and Gilbert, Seth and Lynch, Nancy and Newport, Calvin and Nolte, Tina and Spindel, Michael},
+ title = {The Virtual Node Layer: A Programming Abstraction for Wireless Sensor Networks},
+ booktitle = {Proceedings of the 12th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining},
+ year = {2007},
+ location = {Cambridge, MA, USA},
+ pages = {1--6},
+ numpages = {6},
+ publisher = {MIT Computer Science and Artificial Intelligence Lab},
+ address = {Cambridge, MA, USA},
+ keywords = {Wireless ad hoc networks, network architecture, virtual infrastructure},
+ annote = {This paper addresses the problems around reliable coordination in dynamic, wireless networks. The paper proposes creating a static and reliable abstract layer composed of virtual nodes on top of the unpredictable and unreliable client or physical nodes. The architecture of the emulator is well thought-out and perhaps should be emulated. One key weakness of this approach is the requirement that the locations of the virtual nodes be decided before the start of program execution. This weakness results necessarily from the attempt to model an underlying dynamic network with a perfectly static network. },
+}
+
+% Friedman and Vaysburd
+@inproceedings{Friedman:1997,
+ author = {Friedman, Roy Vaysburd, Alexey},
+ title = {Fast Replicated State Machines Over Partitionable Networks},
+ location = {Ithaca, NY, USA},
+ pages = {1--8},
+ numpages = {8},
+ publisher = {Department of Computer Science Cornell University},
+ keywords = {replicated state machine approach, partitionable networks},
+ annote = { This paper lays out a faster and more reliable approach to implementing replicated state machines in partitionable networks. The approach is much faster than the pessimistic approach while sacrifing only a little fault-tolerance and much safer than the optimistic approach. The real relevance for my work is how this approach deals with the partitioning of the network, which will be an important in the fully dynamic case. The approach won't be overly relatable because it wants to only allow one partition to truly function and update state while my algorithm wants each partition to be able to function on its own. It requires that a majority of the nodes be in a single network to function, which guarantees the safety of the RSM. },
+}
+
+% Schneider
+@inproceedings{Schneider:1990,
+ author = {Schneider, Fred B.},
+ title = {Implementing Fault-Tolerant Services Using the State Machine Approach: A Tutorial},
+ booktitle = {ACM Computing Surveys},
+ series = {Vol. 22, No. 4},
+ year = {1990},
+ location = {Ithaca, NY, USA},
+ pages = {299--319},
+ numpages = {20},
+ publisher = {ACM},
+ keywords = {Algorithms, Design, Reliability, Client-server, distributed services, state machine approach},
+ annote = { Schneider lays out the replicated state machine approach to achieving fault-tolerance in a distributed system in this tutorial paper.  This paper examines two types of faults: Byzantine failures and Fail-stop failures. The paper lays out the core requirements of reliable replica coordination, agreement and order, and techniques for meeting them including a "logical clock" and a synchronized real-time clock. This paper is a recap of much of my distributed systems class. },
+}
