@@ -390,22 +390,52 @@ Therefore, $b_j$ will never terminate.
 \begin{proof}
 A BFS instance $b_i$ will eventually terminate if every node in the network runs $b_i$. 
 Every node in the network will eventually run $b_{u_{max}}$ so $b_{u_{max}}$ will eventually terminate and the process with ID $u_{max}$ will set leader = true.
-
 \end{proof}
 
+\begin{definition}
+For a given node, define $r_t$ as the consecutive rounds of the main execution that directly map to round $t$ of the reference execution.
+For a given node $a$ in the reference execution, define $s_a$ as the node in the main execution that simulates $a$.
+% Should I use the term node or process? Or do I just have to be consistent? (which I haven't been)
+\end{definition}
 
-Step 1: relate rounds of real execution to a single round in the reference execution \;
-Simulation of a round of the reference execution for leader starts when the leader broadcasts its message according to the algorithm and ends when the leader has received messages from all of its children \;
-Simulation of a round of the reference execution for a child node is between when the node broadcasts its message and when the node receives the message from the leader \;
+\begin{lemma}
+\label{Simulation}
+  The main execution correctly simulates the reference execution.
+\end{lemma}
 
-Step 2: Define what it means for the real execution to correctly implement a round of the reference \;
-Successful simulation of the reference execution means that the leader receives the messages from all of the nodes and the nodes receive the message from the leader node \;
+\begin{proof}
+For a given node and any round $t$ in the reference execution, $r_t$ exists (Lemma~\ref{SimulationRoundRelation}).
+For a given node $a$, round $t$ of the reference execution is successfully simulated by $r_t$ when the communication log of $a$ for $t$ is identical to the communication log of $s_a$ for $t_r$.
+Assuming the reference execution is correctly simulated until round $r$, round $r$ is correctly simulated (Lemma~\ref{SimulationInduction}). 
+% not sure if I need anything else here?
+Therefore, the main execution correctly simulates the reference execution.
+\end{proof}
 
-Step 3: Assume up until Round R in the reference execution, everything in the main execution has matched everything in the reference execution; prove Round R in the reference execution is correctly simulated \;
-So what happens in round R-1? The CNs all receive their message from the leader and the leader receives a message from every node in the network \;
-In the first round of the rounds of the main execution that simulate round R, the leader broadcasts his message to his children and all of the leaf nodes broadcast their message, which is received by their parent \;
-In the second round, the children of the leader broadcast his message, which is received by their children; the nodes who received messages from all of their children sends their messages to their parents \;
+\begin{lemma}
+\label{SimulationRoundRelation}
+For a given node and any round $t$ in the reference execution, $r_t$ exists.
+\end{lemma}
 
+\begin{proof}
+For the star node in the reference execution, the simulation of one round of its execution is defined as beginning when $u_{max}$ broadcasts its message and ending when $u_{max}$ has received messages from all of its children.
+% is it appropriate to use umax in place of leader? Technically, it is the node that will set leader to true but that will be umax
+For any given child node $a$ in the reference execution, the simulation of one round of its execution is defined as between when $a$ broadcasts its message and when $a$ receives the leader's message from its parent.
+\end{proof}
+
+\begin{lemma}
+\label{SimulationInduction}
+Assuming the reference execution is correctly simulated until round $r$, round $r$ is correctly simulated.
+\end{lemma}
+\begin{proof}
+Assuming the reference execution is correctly simulated until round $r$, the list of the communication logs of the reference execution is equivalent to that of the main execution before the start of round $r$.
+In the reference execution, the star node will send its message $m$ to the other nodes and record sent $m$ in its communication log. In the main execution, $u_{max}$ will broadcast its message, also $m$ to its neighbors and record sent $m$ in its communication log.
+
+In the reference execution, every child node will receive $m$ and record received $m$ in its communication log. In the main execution, the children of $u_{max}$ will receive m, record received $m$ in its log, and broadcast $m$ to its children. Eventually, every node in the main execution network will have received m and recorded received $m$ in its log.
+In the reference execution, a given child node $a$ will send its message $m_1$ to the star node. $a$ will record sent $m_1$ in its log and the star node will record received $m_1$ in its log. 
+In the main execution, $a$ will eventually broadcast $m_1$ to its parent and $m_1$ will eventually reach $u_{max}$. $a$ will record sent $m_1$ in its log and $u_{max}$ will record received $m_1$ in its log.
+
+Therefore, after round $r$, the list of the logs of the reference execution will be equivalent to that of the main execution meaning round $r$ was correctly simulated.
+\end{proof}
 
 \end{document}
 
