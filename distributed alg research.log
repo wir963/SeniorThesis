@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  17 FEB 2014 18:32
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  19 FEB 2014 20:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -322,34 +322,34 @@ LaTeX Warning: No \author given.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[3] [4]
-No file "distributed alg research".bbl.
-[5] [6] [7] [8] [9] [10] [11] (./distributed alg research.aux) ) 
+[3] [4] [5] [6] [7] [8] [9] [10] (./distributed alg research.aux) ) 
 Here is how much of TeX's memory you used:
- 4628 strings out of 493315
- 61118 string characters out of 6137904
- 162931 words of memory out of 5000000
- 8004 multiletter control sequences out of 15000+600000
- 16825 words of font info for 49 fonts, out of 8000000 for 9000
+ 4629 strings out of 493315
+ 61136 string characters out of 6137904
+ 161931 words of memory out of 5000000
+ 8005 multiletter control sequences out of 15000+600000
+ 17601 words of font info for 50 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 38i,20n,26p,782b,478s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/tex
-live/2013/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/local/texli
-ve/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texliv
-e/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/
-2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/20
+ 38i,20n,26p,437b,478s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/
+texlive/2013/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/local/te
+xlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
+live/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texli
+ve/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive
+/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/20
 13/texmf-dist/fonts/type1/public/cm-super/sfbx0900.pfb></usr/local/texlive/2013
 /texmf-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/local/texlive/2013/t
-exmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/texlive/2013/tex
-mf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2013/texmf
--dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/texlive/2013/texmf-d
-ist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2013/texmf-dis
-t/fonts/type1/public/cm-super/sfrm1728.pfb></usr/local/texlive/2013/texmf-dist/
-fonts/type1/public/cm-super/sfti1000.pfb>
-Output written on "distributed alg research.pdf" (11 pages, 182849 bytes).
+exmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/local/texlive/2013/tex
+mf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/texlive/2013/texmf
+-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2013/texmf-d
+ist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/texlive/2013/texmf-dis
+t/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2013/texmf-dist/
+fonts/type1/public/cm-super/sfrm1728.pfb></usr/local/texlive/2013/texmf-dist/fo
+nts/type1/public/cm-super/sfti1000.pfb>
+Output written on "distributed alg research.pdf" (10 pages, 202576 bytes).
 PDF statistics:
- 85 PDF objects out of 1000 (max. 8388607)
- 60 compressed objects within 1 object stream
+ 90 PDF objects out of 1000 (max. 8388607)
+ 64 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
