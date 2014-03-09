@@ -36,58 +36,58 @@ Abstract
 \end{abstract}
 
 \section{High-Level Description of Goal}
-The goal of this paper is to simplify the creation of distributed algorithms for dynamic networks by demonstrating that any algorithm that works for the broadcast variant of the synchronous model with a star topology can be made to work for the broadcast variant of the synchronous model with any topology. 
+Ignore for now - The goal of this paper is to simplify the creation of distributed algorithms for dynamic networks by demonstrating that any algorithm that works for the broadcast variant of the synchronous model with a star topology can be made to work for the broadcast variant of the synchronous model with any topology. 
 We will do so by describing a simulation algorithm that, if run on every node in the broadcast model, will match perfectly the output of the nodes of the centrally controlled model.
 
 \section{Models}
 
-Main Execution Model % or Main Model?
+Synchronous Broadcast Model \\
+
+The synchronous broadcast model is a variant of the synchronous network model (definition taken from Lynch textbook - how to cite?). The synchronous network model is defined with respect to a directed graph $G=(V,E)$. We define $n$ to denote $|V|$, the number of nodes in the graph. An algorithm is a set of instructions to be followed by the nodes. When we say the network executes an algorithm $a$, this means each node in the network is running a copy of the $a$. (For simplicity, we refer to a copy of the algorithm running on node $u$ as simply node $u$.) In the execution, the nodes proceed in lock-step repeatedly performing the following two steps:
 \begin{enumerate}
-\item We are considering the broadcast variant of the synchronous model, defined with respect to a connected network topology G=(V,E).
-\item The broadcast variant is defined such that a given node has no knowledge of its neighbors but may send a single message per round that all of its neighbors will receive.
-\item Nodes in the network have comparable unique identification numbers (UIDs) and have knowledge of their own UID. 
+  \item Following the algorithm, decide which messages, if any, to send to their neighbors in $G$.
+  \item Receive and process all incoming messages from their neighbors.
 \end{enumerate}
+The combination of these two steps is called a round.
 
-Reference Execution Model % or Reference Model?
-\begin{enumerate}
-\item We consider the synchronous model with a star network topology. 
-\item A given node records its sent message and its received message for each round in a communication log. 
+The synchronous broadcast model is different from the synchronous network model in two significant ways. First, the synchronous broadcast model is defined with respect to a connected graph $G=(V,E)$ with bi-directional edges. Second, nodes don't pass individual messages directly to their neighbors. Instead, nodes broadcast one message per round that is sent all neighbors. 
 
-% *note* Should it be the broadcast variant? I think it should be a more traditional wired varaint to make it more broadly applicable, which is always a good thing
+Additionally, we assume that nodes have comparable unique identifiers and that nodes are in one of two high-level states, active or deactive. When a node is active, it performs the two steps, sending and receiving messages, that constitute a round. When a node is deactive, it performs neither of the two steps that constitute a round. We say a node is activated when its state changes from deactive to active. When a node is activated, it always begins in an initial state such that it has no knowledge of a global round counter. We say a node is deactivated when its state changes from active to deactive. When a node is deactivated, it resets all local variables such that if it activates, it activates in an initial state.
 
-\end{enumerate}
+The only restriction that we place on the activation and deactivation of nodes in G is that the active subset of the graph G must always be connected. We emphasize that other than this minimal restriction the activation and deactivation of nodes are uncontrolled by the algorithm. 
 
 \section{Problem Definition}
 
-This paper considers the simulation problem, the problem of correctly simulating an algorithm designed for the reference model on the main model. We examine the simulation problem using three different assumptions regarding the arrival and departure of nodes in the network.
-% better name than the simulation problem? working title;
+This paper proposes a solution to the simulation problem. In general terms, the simulation problem is how to run an arbitrary algorithm designed for a known network topology in a network with an arbitrary topology. This paper examines the specific simulation problem of the star network topology as the known network topology. 
 
-We define the main execution to be an instance of the main execution model with $n$ processes.
-We define the reference execution to be an instance of the reference execution model with $n$+1 processes.
+\subsection{The Simulation Problem}
 
-% what belongs in the overall definition and what belongs in the definitions of the individual cases??
-% definition of correctness - might be different
-% more specific definition of the problem (dealing with n or n+1 processes, etc.)
-% talk about the input algorithms, etc. - should be the same
-% General Rule (?) - if it's the same for all three cases, put it in the overall problem definition? If different, put it in the subsection?
-% Where to talk about the communication logs?
+The simulation problem provides an algorithm with the following input, algorithms $a_1$ and $a_2$. The goal of the algorithm is to simulate the execution of the star topology where the center node runs $a_1$ and the point nodes run $a_2$. Every node $u$ in the algorithm keeps a sequence of pairs where the $i$th pair in the list contains the message sent and the message received in round $i$ by the corresponding node in the reference execution, which we define as the execution of the algorithm in the star network topology.
 
-\subsection{The Static Case}
+We say an algorithm solves the simulation problem if for every point node $p$ in the reference execution, there is at least one node in the algorithm with an identical sequence of pairs. (does in the algorithm make clear the reference to the main execution?)
 
-The static case assumes that all nodes arrive in the network at the same time and that no node may depart from the network during the execution. Because the simulation problem is defined in the synchronous model, this assumption means that round $r$ begins and ends at the same time for each node in the network.
-% if not otherwise noted, assume that a specified round refers to that round in the main execution, not in the reference execution
+We examine the simulation problem under three distinct assumptions regarding the allowable activation and deactivation of nodes in the network. The exact behavior of the reference execution (the behavior to be simulated) will be defined in each of the three cases.
 
-The simulation problem provides the algorithm the following input, algorithms $a_1$ and $a_2$, and expects it to produce a list of communication logs. We say a given algorithm solves the simulation problem if it outputs list Y where Y is equivalent to the list of communication logs generated by the reference execution given input of algorithm $a_1$ to the leader and algorithm $a_2$ to all other nodes.
-% is it necessary to specify which alg goes to which type of node? Better to have two algorithms or one that works for both?
-% Must I define how the communication log of the main execution is done? I think I can do that in the algorithm
+\subsection{The Simultaneous Activation Case}
 
-\subsection{The Arrival Only Case}
+% do I define with respect to the reference execution or the main execution; I think this is critical
+% my understanding is that nodes can activate or deactivate at the beginning of any round. WE define the behavior of the nodes in 
+% the reference execution to be properly simulated by the nodes in the algorithm according to the activations and deactivations
+% of nodes in the algorithm.
 
-The arrival only case assumes that a node may arrive in the network at the beginning of any round of the main execution and no node may depart from the network during the execution. A node that arrives in the beginning of a round $r$ in the main execution will arrive in the reference execution at the beginning of the next round of the reference execution. 
+In the simultaneous activation case, all nodes activate at the same time and no node deactivates. As a result, the local round counters of all activated nodes are synchronized. The reference execution is defined such that all nodes activate at the same time and no node deactivates.
 
-% the correctness proof is same as above; this seems overly short;
 
-\subsection{The Departure Only Case}
+\subsection{The Staggered Activation Case}
+
+In the staggered activation case, nodes may activate at the beginning of any round in the algorithm but no node may deactivate during execution. When a node in the algorithm activates, a corresponding node in the reference execution activates at the next opportunity, the beginning of the next round of the reference execution. As a result, when a node in the algorithm activates, it has no node to simulate until the beginning of the next round of the reference execution. 
+
+\subsection{The Deactivation Case}
+
+In the deactivation case, nodes in the main execution activate at the same time and nodes may deactivate at the beginning of any round of the main execution. The deactivation of a node may not partition the network, which is defined to have a connected network topology at the beginning of every round.
+
+We define the reference execution to be an instance of the synchronous message-passing model defined with respect to a star network topology. For a node $a$ in the reference execution that deactivates during $r_t$, the communication log for the node in the reference execution simulated by $a$ will be erased for round $t$.
+
 
 \subsection{The Arrival and Departure Case}
 
@@ -357,6 +357,9 @@ No more than one node will have leader set to true at any point (Lemma~\ref{LESa
 
 \begin{definition}
 Let $u_{max}$ be the ID of the process with the maximum UID in the network. 
+\end{definition}
+
+\begin{definition}
 Let BFS instance $b_i$ refer to an instance of the terminating breadth-first search protocol initiated by process with ID i.
 \end{definition}
 
@@ -393,9 +396,22 @@ Every node in the network will eventually run $b_{u_{max}}$ so $b_{u_{max}}$ wil
 \end{proof}
 
 \begin{definition}
-For a given node, define $r_t$ as the consecutive rounds of the main execution that directly map to round $t$ of the reference execution. For a given node and any round $t$ in the reference execution, $r_t$ exists (Lemma~\ref{SimulationRoundRelation}).
+For a given node, define $r_t$ as the consecutive rounds of the main execution that directly map to round $t$ of the reference execution.
+\end{definition}
+
+\begin{lemma}
+\label{SimulationRoundRelation}
+For a given node and any round $t$ in the reference execution, $r_t$ exists.
+\end{lemma}
+
+\begin{proof}
+For the star node in the reference execution, the simulation of one round of its execution is defined as beginning when $u_{max}$ broadcasts its message and ending when $u_{max}$ has received messages from all of its children.
+% is it appropriate to use umax in place of leader? Technically, it is the node that will set leader to true but that will be umax
+For any given child node $a$ in the reference execution, the simulation of one round of its execution is defined as between when $a$ broadcasts its message and when $a$ receives the leader's message from its parent.
+\end{proof}
+
+\begin{definition}
 For a given node $a$ in the reference execution, define $s_a$ as the node in the main execution that simulates $a$.
-% Should I use the term node or process? Or do I just have to be consistent? (which I haven't been)
 \end{definition}
 
 \begin{lemma}
@@ -418,16 +434,7 @@ After round $k+1$, the list of the logs of the reference execution will be equiv
 
 \end{proof}
 
-\begin{lemma}
-\label{SimulationRoundRelation}
-For a given node and any round $t$ in the reference execution, $r_t$ exists.
-\end{lemma}
 
-\begin{proof}
-For the star node in the reference execution, the simulation of one round of its execution is defined as beginning when $u_{max}$ broadcasts its message and ending when $u_{max}$ has received messages from all of its children.
-% is it appropriate to use umax in place of leader? Technically, it is the node that will set leader to true but that will be umax
-For any given child node $a$ in the reference execution, the simulation of one round of its execution is defined as between when $a$ broadcasts its message and when $a$ receives the leader's message from its parent.
-\end{proof}
 
 \end{document}
 
