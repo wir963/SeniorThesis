@@ -80,13 +80,15 @@ In the simultaneous activation case, all nodes activate at the same time and no 
 
 \subsection{The Staggered Activation Case}
 
-In the staggered activation case, nodes may activate at the beginning of any round in the algorithm but no node may deactivate during execution. When a node in the algorithm activates, a corresponding node in the reference execution activates at the next opportunity, the beginning of the next round of the reference execution. As a result, when a node in the algorithm activates, it has no node to simulate until the beginning of the next round of the reference execution. 
+In the staggered activation case, nodes may activate at the beginning of any round in the algorithm but no node may deactivate during execution. When a node in the algorithm activates, a corresponding node in the reference execution activates at the next opportunity, right before the next round of the reference execution. As a result, when a node in the algorithm activates, it has no node to simulate (and will not produce a pair) until the beginning of the next round of the reference execution.
+
+% Do nodes in the algorithm know when a round in the reference execution starts or ends? Their parent could tell them?
 
 \subsection{The Deactivation Case}
 
-In the deactivation case, nodes in the main execution activate at the same time and nodes may deactivate at the beginning of any round of the main execution. The deactivation of a node may not partition the network, which is defined to have a connected network topology at the beginning of every round.
+In the deactivation case, nodes in the main execution activate at the same time and nodes may deactivate at the beginning of any round of the algorithm. When a node in the algorithm deactivates, a corresponding node in the reference execution deactivates at the next opportunity, right before the next round of the reference execution. In this situation, it is necessary to compare the length of the nodes sequence of pairs with the that of the corresponding node in the reference execution. If the corresponding node has a longer sequence of pairs, then the node in the algorithm didn't output a pair before its deactivation and the last pair in the corresponding node's sequence of pair must be deleted. 
 
-We define the reference execution to be an instance of the synchronous message-passing model defined with respect to a star network topology. For a node $a$ in the reference execution that deactivates during $r_t$, the communication log for the node in the reference execution simulated by $a$ will be erased for round $t$.
+% necessary? - As defined in the problem definition section, the deactivation of a node must not partition the network, which is defined to be a connected network topology at the beginning of every round. 
 
 
 \subsection{The Arrival and Departure Case}
@@ -97,7 +99,7 @@ We define the reference execution to be an instance of the synchronous message-p
 \item Run unmodified Leader Election without Network Information 
 
   \begin{enumerate}
-  \item Assume nodes have UIDs (which is also assumed for the distributed model)
+  \item Nodes have UIDs
   \item Each process runs Terminating Synchronous Breadth First Search and the node that manages to terminate elects itself leader and tells the other nodes to terminate
   \end{enumerate}
 
