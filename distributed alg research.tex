@@ -58,7 +58,9 @@ The only restriction that we place on the activation and deactivation of nodes i
 
 \section{Problem Definition}
 
-The reliable broadcast problem provides arbitrary nodes in the broadcast model with messages to send to all other (active?) nodes in the network. This problem contains an environment that communicates with individual nodes through a send and receive interface implemented by the node. The environment passes a message to be sent to a node and that node sends a ``done'' signal to the environment through the send interface. We assume the environment will wait until it has received a done message from a node before giving it another message to send. The receive interface is used by a node to notify the interface that it received a specific message. 
+The reliable broadcast problem is the coordination of messages in a network of nodes where every node must receive messages in the same order even though messages may start at any node. 
+
+The reliable broadcast problem provides arbitrary nodes in the broadcast model with messages to send to all active nodes in the network. This problem contains an environment that communicates with individual nodes through a send and receive interface implemented by the node. The environment passes a message to be sent to a node and that node sends a ``done'' signal to the environment through the send interface. We assume the environment will wait until it has received a done message from a node before giving it another message to send. The receive interface is used by a node to notify the interface that it received a specific message. 
 
 An algorithm $a$ that solves the reliable broadcast problem will implement the send and receive interface. An algorithm is said to solve the reliable broadcast problem if it satisfies the following properties:
 
@@ -66,11 +68,11 @@ An algorithm $a$ that solves the reliable broadcast problem will implement the s
  
   \item Liveness Property: If a node $u$ running algorithm $a$ is passed a message to send through its send interface, it will eventually respond with a ``done'' signal to the environment.
 
-  \item Safety Property #1: Assume node $u$ is passed a message $m$ throught its send interface at round $r$ and it replies with a ``done'' signal in some later round $r_1$. Let $A(r,r_1)$ be the set of nodes that are active in every round in the interval from $r$ to $r_1$. It must be the case that every node in $A(r,r_1)$, with the exception of $u$, passes message $m$ to the environment through its receive interface at some point between rounds $r$ and $r_1$. 
+  \item Safety Property \#1: Assume node $u$ is passed a message $m$ throught its send interface at round $r$ and it replies with a ``done'' signal in some later round $r_1$. Let $A(r,r_1)$ be the set of nodes that are active in every round in the interval from $r$ to $r_1$. It must be the case that every node in $A(r,r_1)$, with the exception of $u$, passes message $m$ to the environment through its receive interface at some point between rounds $r$ and $r_1$. 
 
-  \item Safety Property #2: Assume some node $u$ passes a message $m$ to its environment through its receive interface in some round $r$ and then passes a different message $m_1$ in a later round $r_1$. It follows that there is no node $v$ that passes up message $m_1$ before message $m$. 
+  \item Safety Property \#2: Assume some node $u$ passes a message $m$ to its environment through its receive interface in some round $r$ and then passes a different message $m_1$ in a later round $r_1$. It follows that there is no node $v$ that passes up message $m_1$ before message $m$. 
 
-  \item Safety Property #3: Assume some node $u$ passes a message $m$ to its environment through its receive interface, the following two conditions must hold:
+  \item Safety Property \#3: Assume some node $u$ passes a message $m$ to its environment through its receive interface, the following two conditions must hold:
   \begin {enumerate}
     \item $u$ has not previously passed $m$ to the environment
     \item some node previously received $m$ from the environment through its send interface
