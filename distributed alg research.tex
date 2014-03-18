@@ -58,11 +58,13 @@ The only restriction that we place on the activation and deactivation of nodes i
 
 \section{Problem Definition}
 
-The reliable broadcast problem is the coordination of messages in a network of nodes where every node must receive messages in the same order even though messages may start at any node. 
+The reliable broadcast problem provides arbitrary nodes in the synchronous broadcast model with messages to send to all active nodes in the network. This problem assumes there is an environment at each node $u$ that communicates with $u$ through an  interface with three commands, \textit{send}, \textit{receive} and \textit{acknowledge}. We refer to the environment at node $u$ as $E_u$.
+% should I name the interface?
 
-The reliable broadcast problem provides arbitrary nodes in the broadcast model with messages to send to all active nodes in the network. This problem contains an environment that communicates with individual nodes through a send and receive interface implemented by the node. The environment passes a message to be sent to a node and that node sends a ``done'' signal to the environment through the send interface. We assume the environment will wait until it has received a done message from a node before giving it another message to send. The receive interface is used by a node to notify the interface that it received a specific message. 
+Using the \textit{send} command, $E_u$ can pass a message $m$ to $u$, which $u$ is expected to send to all other nodes in the network. Once all the other nodes have received $m$, $u$ is expected to pass a ``done'' signal to $E_u$ using the \textit{acknowledge} command. We assume $E_u$ will not pass another message to $u$ until it has received a ``done'' signal from $u$. 
+When a node $u$ receives a message $m$ from another node, it uses the \textit{receive} command to notify $E_u$ about $m$.
 
-An algorithm $a$ that solves the reliable broadcast problem will implement the send and receive interface. An algorithm is said to solve the reliable broadcast problem if it satisfies the following properties:
+An algorithm $A$ is said to solve the reliable broadcast problem if it implements the \textit{send}, \textit{receive} and \textit{acknowledge} commands and satisfies the following properties (assume all messages are unique):
 
 \begin {enumerate}
  
