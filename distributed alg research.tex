@@ -58,40 +58,26 @@ The only restriction that we place on the activation and deactivation of nodes i
 
 \section{Problem Definition}
 
-This paper proposes a solution to the simulation problem. In general terms, the simulation problem is how to run an arbitrary algorithm designed for a known network topology in a network with an arbitrary topology. This paper examines the specific simulation problem of the star network topology as the known network topology. 
+The reliable broadcast problem provides arbitrary nodes in the broadcast model with messages to send to all other (active?) nodes in the network. This problem contains an environment that communicates with individual nodes through a send and receive interface implemented by the node. The environment passes a message to be sent to a node and that node sends a ``done'' signal to the environment through the send interface. We assume the environment will wait until it has received a done message from a node before giving it another message to send. The receive interface is used by a node to notify the interface that it received a specific message. 
 
-\subsection{The Simulation Problem}
+An algorithm $a$ that solves the reliable broadcast problem will implement the send and receive interface. An algorithm is said to solve the reliable broadcast problem if it satisfies the following properties:
 
-The simulation problem provides an algorithm with the following input, algorithms $a_1$ and $a_2$. The goal of the algorithm is to simulate the execution of the star topology where the center node runs $a_1$ and the point nodes run $a_2$. Every node $u$ in the algorithm keeps a sequence of pairs where the $i$th pair in the list contains the message sent and the message received in round $i$ by the corresponding node in the reference execution, which we define as the execution of the algorithm in the star network topology.
+\begin {enumerate}
+ 
+  \item Liveness Property: If a node $u$ running algorithm $a$ is passed a message to send through its send interface, it will eventually respond with a ``done'' signal to the environment.
 
-We say an algorithm solves the simulation problem if for every point node $p$ in the reference execution, there is at least one node in the algorithm with an identical sequence of pairs. (does in the algorithm make clear the reference to the main execution?)
+  \item Safety Property #1: Assume node $u$ is passed a message $m$ throught its send interface at round $r$ and it replies with a ``done'' signal in some later round $r_1$. Let $A(r,r_1)$ be the set of nodes that are active in every round in the interval from $r$ to $r_1$. It must be the case that every node in $A(r,r_1)$, with the exception of $u$, passes message $m$ to the environment through its receive interface at some point between rounds $r$ and $r_1$. 
 
-We examine the simulation problem under three distinct assumptions regarding the allowable activation and deactivation of nodes in the network. The exact behavior of the reference execution (the behavior to be simulated) will be defined in each of the three cases.
+  \item Safety Property #2: Assume some node $u$ passes a message $m$ to its environment through its receive interface in some round $r$ and then passes a different message $m_1$ in a later round $r_1$. It follows that there is no node $v$ that passes up message $m_1$ before message $m$. 
 
-\subsection{The Simultaneous Activation Case}
+  \item Safety Property #3: Assume some node $u$ passes a message $m$ to its environment through its receive interface, the following two conditions must hold:
+  \begin {enumerate}
+    \item $u$ has not previously passed $m$ to the environment
+    \item some node previously received $m$ from the environment through its send interface
+  \end{enumerate}
 
-% do I define with respect to the reference execution or the main execution; I think this is critical
-% my understanding is that nodes can activate or deactivate at the beginning of any round. WE define the behavior of the nodes in 
-% the reference execution to be properly simulated by the nodes in the algorithm according to the activations and deactivations
-% of nodes in the algorithm.
+\end{enumerate}
 
-In the simultaneous activation case, all nodes activate at the same time and no node deactivates. As a result, the local round counters of all activated nodes are synchronized. The reference execution is defined such that all nodes activate at the same time and no node deactivates.
-
-
-\subsection{The Staggered Activation Case}
-
-In the staggered activation case, nodes may activate at the beginning of any round in the algorithm but no node may deactivate during execution. When a node in the algorithm activates, a corresponding node in the reference execution activates at the next opportunity, right before the next round of the reference execution. As a result, when a node in the algorithm activates, it has no node to simulate (and will not produce a pair) until the beginning of the next round of the reference execution.
-
-% Do nodes in the algorithm know when a round in the reference execution starts or ends? Their parent could tell them?
-
-\subsection{The Deactivation Case}
-
-In the deactivation case, nodes in the main execution activate at the same time and nodes may deactivate at the beginning of any round of the algorithm. When a node in the algorithm deactivates, a corresponding node in the reference execution deactivates at the next opportunity, right before the next round of the reference execution. In this situation, it is necessary to compare the length of the nodes sequence of pairs with the that of the corresponding node in the reference execution. If the corresponding node has a longer sequence of pairs, then the node in the algorithm didn't output a pair before its deactivation and the last pair in the corresponding node's sequence of pair must be deleted. 
-
-% necessary? - As defined in the problem definition section, the deactivation of a node must not partition the network, which is defined to be a connected network topology at the beginning of every round. 
-
-
-\subsection{The Arrival and Departure Case}
 
 \section{Algorithm}
 
