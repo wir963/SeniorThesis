@@ -58,7 +58,7 @@ The only restriction that we place on the activation and deactivation of nodes i
 
 \section{Problem Definition}
 
-The reliable broadcast problem provides arbitrary nodes in the synchronous broadcast model with messages to send to all active nodes in the network. This problem assumes there is an environment at each node $u$ that communicates with $u$ through an  interface with three commands, \textit{send}, \textit{receive} and \textit{acknowledge}. We refer to the environment at node $u$ as $E_u$.
+The reliable broadcast problem provides messages to arbitrary nodes in the synchronous broadcast model to send to all active nodes in the network. This problem assumes there is an environment at each node $u$ that communicates with $u$ through an  interface with three commands, \textit{send}, \textit{receive} and \textit{acknowledge}. We refer to the environment at node $u$ as $E_u$.
 % should I name the interface?
 
 Using the \textit{send} command, $E_u$ can pass a message $m$ to $u$, which $u$ is expected to send to all other nodes in the network. Once all the other nodes have received $m$, $u$ is expected to pass a ``done'' signal to $E_u$ using the \textit{acknowledge} command. We assume $E_u$ will not pass another message to $u$ until it has received a ``done'' signal from $u$. 
@@ -68,16 +68,16 @@ An algorithm $A$ is said to solve the reliable broadcast problem if it implement
 
 \begin {enumerate}
  
-  \item Liveness Property: If a node $u$ running algorithm $a$ is passed a message to send through its send interface, it will eventually respond with a ``done'' signal to the environment.
+  \item Liveness Property: If a node $u$ running algorithm $A$ is passed a message by $E_u$ through its \textit{send} command, $u$ will eventually send  a ``done'' signal to $E_u$ using the \textit{acknowledge} command.
 
-  \item Safety Property \#1: Assume node $u$ is passed a message $m$ throught its send interface at round $r$ and it replies with a ``done'' signal in some later round $r_1$. Let $A(r,r_1)$ be the set of nodes that are active in every round in the interval from $r$ to $r_1$. It must be the case that every node in $A(r,r_1)$, with the exception of $u$, passes message $m$ to the environment through its receive interface at some point between rounds $r$ and $r_1$. 
+  \item Safety Property \#1: Assume node $u$ is passed a message $m$ by $E_u$ at round $r$ and $u$ sends  a ``done'' signal in some later round $r_1$. Let $A(r,r_1)$ be the set of nodes that are active in every round in the interval from $r$ to $r_1$. It must be the case that every node in $A(r,r_1)$, with the exception of $u$, passes message $m$ to its environment through its \textit{receive} command at some point between rounds $r$ and $r_1$. 
 
-  \item Safety Property \#2: Assume some node $u$ passes a message $m$ to its environment through its receive interface in some round $r$ and then passes a different message $m_1$ in a later round $r_1$. It follows that there is no node $v$ that passes up message $m_1$ before message $m$. 
+  \item Safety Property \#2: Assume some node $u$ passes a message $m$ to its environment through its \textit{receive} command in some round $r$ and then passes a different message $m_1$ in a later round $r_1$. It follows that no node in the network passed message $m_1$ to its environment before message $m$. 
 
-  \item Safety Property \#3: Assume some node $u$ passes a message $m$ to its environment through its receive interface, the following two conditions must hold:
+  \item Safety Property \#3: Assume some node $u$ passes a message $m$ to its environment through its \textit{receive} command, the following two conditions must hold:
   \begin {enumerate}
-    \item $u$ has not previously passed $m$ to the environment
-    \item some node previously received $m$ from the environment through its send interface
+    \item $u$ has not previously passed $m$ to its environment
+    \item some node previously received $m$ from its environment through its \textit{send} command
   \end{enumerate}
 
 \end{enumerate}
