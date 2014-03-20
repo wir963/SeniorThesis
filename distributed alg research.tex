@@ -86,34 +86,13 @@ An algorithm $A$ is said to solve the reliable broadcast problem if it implement
 \section{Algorithm}
 
 \begin{enumerate}
-\item Run unmodified Leader Election without Network Information 
+\item Run modified Leader Election without Network Information 
 
-  \begin{enumerate}
-  \item Nodes have UIDs
-  \item Each process runs Terminating Synchronous Breadth First Search and the node that manages to terminate elects itself leader and tells the other nodes to terminate
-  \end{enumerate}
+Need to write this part up formally but it is identical to the old LE
 
-\item The Simulation
+\item  Reliable Message Passing with Simulataneous Activation
 
-  \begin{enumerate}
-  \item Assume that each and every round of the given algorithm has a finite repetitions of a step, which is comprised of two parts
-    \begin{enumerate}
-    \item The star node sends a broadcast message to all the leaf nodes (Broadcast part)
-    \item All leaf nodes send a receive message to the star node in response to the broadcast message (Receive part)
-    \end{enumerate}
-
-  \item Each step is simulated by the leader node running a modified instance of terminating synchronous BFS
-    \begin{enumerate}
-    \item The search message sent by a parent node to its children nodes is modified to be ``search'' plus the broadcast message, which is dictated by the output of the input algorithm A1
-    \item Upon receiving a search message, a node runs the input algorithm A2 on the broadcast message portion and then creates the receive message portion using the output of A2
-    \item The done message sent by a child node to its parent node is modified to be ``done'' plus both the UID and the receive message of the child node as well as any done messages received by the child node 
-    \item Upon receiving a search message, a node writes the broadcast message portion to its communication log
-    \item Upon sending a done message, a node writes the receive message portion to its communication log
-    \item The leader simulates sending a search message to itself and then simulates sending a done message back to itself
-    \item This algorithm terminates when the leader has received done messages from all of its children and a simulated done message from itself
-    \end{enumerate}
-
-  \end{enumerate}
+  Assume there exists a spanning tree covering the network (this was built in the modified LE step). A node $u$ receives a message $m$ from $E_u$ using the \textit{send} command. $u$ broadcasts message $m_1$, which contains $m$ as well as instructions that only the parent of $u$ should forward $m_1$. Parent of $u$ will broadcast $m_1$ and in this way, $m_1$ will eventually reach the leader of the tree, $u_{max}$. $m_1$ is guaranteed to reach $u_{max}$ because $u_{max}$ is an ancestor of every node in the tree. If there is already another message being sent, $u_{max}$ will add $m$ to its queue. Otherwise, $u_{max}$ will notify its environment of message $m$ using the \textit{receive} command and then broadcasts $m$. All the children of $u_{max}$ will do the same and $m$ will eventually be seen by every node in the network. Every node will only pass $m$ to their environment once because a node will only process $m$ when it is sent by its parent and a node can only have one parent. Nodes that don't have any children and receive $m$ will send a message to their parent confirming that they have received message $m$. When a node receives confirmation messages from all of its children, it will send a message to its parent confirming that it (and all its children) have received message $m$. When $u_{max}$ receives confirmation messages from all of its children, it sends a message to $u$ telling it that all nodes in the network have received $m$ (talk about optimization later). Once $u$ receives this message, it will notify its environment using its \textit{acknowledge} command.
 
 \end{enumerate}
 
