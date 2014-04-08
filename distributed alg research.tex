@@ -116,9 +116,9 @@ The algorithm for reliable broadcast with staggered activation and deactivation 
 In contrast, the deactivation case does not involve electing a leader or building a stable spanning tree. Instead, a node floods the network with the message and the exact global round to execute the \textit{receive} command on the message.
 
 
-A node $u$ receives a message $m$ from its environment at round $r$ using the \textit{send} command. $u$ broadcasts message $m$, with the instructions that every node that receives $m$ should execute the \textit{receive} command on $m$ at a specified round $r'$ where $r'$ = $r$+$n$ where n is an upper bound on the number of nodes in the network. The UID of the source node is attached to the message and is used by any nodes that have multiple receive commands to execute in a given round to determine the correct order of execution. $u$ will use the \textit{acknowledge} command
+A node $u$ receives a message $m$ from its environment at round $r$ using the \textit{send} command. $u$ broadcasts message $m$, with the instructions that every node that receives $m$ should execute the \textit{receive} command on $m$ at a specified round $r'$ where $r'$ = $r$+$n$ where n is an upper bound on the number of nodes in the network. $u$ will execute the \textit{acknowledge} command on $m$ at round $r' + 1$.
 
-After a node executes a \textit{receive} command on a message, that message is deleted from the memory of that node. At the beginning of every round, every node will broadcast all of its messages. When a node hears a broadcast about a message $m'$, it will add $m'$ to its internal list of messages if it hasn't already seen $m'$.
+If a node has multiple \textit{receive} commands to execute in the same round, it executes them in ascending order of the UID of the source node of the message, which is attached to the message. Every node maintains an internal list of messages. At the beginning of every round, every node will broadcast all of the messages. When a node executes a \textit{receive} command on a message, it removes that message from its internal list.  When a node hears a broadcast about a message for the first time, it adds that message to its internal list.
 
 
 \section{Analysis}
