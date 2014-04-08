@@ -84,13 +84,20 @@ An algorithm $A$ is said to solve the reliable broadcast problem if it implement
 
 \section{Algorithm}
 
-Reliable Broadcast with Simulataneous Activation
+  \subsection {Reliable Broadcast with Simultaneous Activation}
 
-Run leader election without network information and keep the parent-child information to form a spanning tree within the network.
+The first step of the algorithm is to build a spanning tree in the network and elect a leader or source node of the tree. When a node activates, it starts running an instance of terminating breadth-first search (BFS) whose source is its ID. If a node hears of a BFS instance whose source is less than the source of its current BFS instance, it will cease running its current instance and start running the new instance. When an instance of BFS terminates successfully, the source node of that instance will elect itself leader of the tree and broadcast a confirm message through the tree. Only one instance of BFS will terminate so only one node will elect itself leader. When a node receives the confirm message, it becomes a confirmed member of the tree. While a node can receive a \textit{send} command from its environment at any point of execution, it won't begin the protocol (described below) for distributing the message throughout the tree until it has become a confirmed member of the tree.
 
-A node $u$ receives a message $m$ from $E_u$ using the \textit{send} command. $u$ broadcasts message $m$, with the instructions that only the specified node, the parent of $u$ in this case, should forward $m$ to the leader. The parent of $u$ will similarly broadcast $m$ and in this way, $m$ will eventually reach the leader of the tree, $u_{max}$. $m$ is guaranteed to reach $u_{max}$ because $u_{max}$ is an ancestor of every node in the tree. If there is already another message being sent, $u_{max}$ will add $m$ to its queue. 
 
-Otherwise, $u_{max}$ will notify its environment of message $m$ using the \textit{receive} command and then broadcast $m$. All children of $u_{max}$ will do the same as $u_{max}$ and $m$ will eventually be seen by every node in the network. Every node will only pass $m$ to their environment once because a node will only process $m$ when it is sent by its parent and a node can only have one parent. Nodes that receive $m$ and don't have any children will send a message to their parent confirming that they have received message $m$. When a node receives confirmation messages from all of its children, it will send a message to its parent confirming that it (and all its children) have received message $m$. When $u_{max}$ has received confirmation messages from all of its children, it will send a message to $u$ telling it that all nodes in the network have received $m$ (talk about optimization later). When $u$ receives this message, it notifies its environment using its \textit{acknowledge} command. Now, $u_{max}$ will process the next message in its queue, if any, or will wait for another message to be sent to it by the network.
+A node $u$ receives a message $m$ from $E_u$ using the \textit{send} command. $u$ broadcasts message $m$ with the instructions that only its parent should forward $m$. Each node that forwards $m$ keeps track of which child sent it $m$. $m$ continues to be passed up the tree from child to parent until it reaches the leader of the tree, $u_{max}$. $m$ is guaranteed to reach $u_{max}$ because $u_{max}$ is an ancestor of every node in the tree. When $u_{max}$ receives a message, it adds that message to its send queue.
+
+
+If another message is not being broadcast through the tree, $u_{max}$ will dequeue the next message $m$, if any exists, off its send queue. Next, $u_{max}$ will notify its environment of message $m$ using the \textit{receive} command and then broadcast $m$. All of the children of $u_{max}$ will receive $m$ and perform the same two actions as $u_{max}$, notifying their respective environments and broadcasting $m$, and in this way, $m$ will eventually be passed by every node to its environment. Every node will pass $m$ to its environment only once because a node will only process $m$ when it is sent by its parent and a node can only have one parent in the tree. A node that receives $m$ and doesn't have any children will send a message to their parent confirming that they have received message $m$. When a node has received confirmation messages from all of its children, it will send a message to its parent confirming that it (and all its children) have received $m$. When $u_{max}$ has received confirmation messages from all of its children, it will perform the following two actions simultaneously. $u_{max}$ will dequeue the next message $m'$, if any exists, off its send queue and repeat the above protocol. 
+
+Additionally, $u_{max}$ will send a message to $u$ telling it that all nodes in the network have received $m$. This message to $u$ follows the same path as the original message from $u$ to $u_{max}$ as each node broadcasts it with the instruction that it only should be forwarded by the specified node, the child that sent it to the parent. When $u$ receives this message, it notifies its environment using its \textit{acknowledge} command.
+
+
+  \subsection {Reliable Broadcast with Staggered Activation}
 
 The algorithm for reliable broadcast with simultaneous activation works for reliable broadcast with staggered activation with two changes.
 
@@ -158,12 +165,15 @@ A BFS instance $b_i$ will eventually terminate if every node in the network runs
 Every node in the network will eventually run $b_{u_{max}}$ so $b_{u_{max}}$ will eventually terminate and the process with ID $u_{max}$ will set leader = true.
 \end{proof}
 
+
+
+
 \subsection {Reliable Broadcast with Simultaneous Activation}
 
-\begin{lemma}
+\begin{theorem}
 \label{StaticReliableBroadcast}
 The algorithm solves the reliable broadcast problem with simultaneous activation.
-\end{lemma}
+\end{theorem}
 \begin{proof}
 This algorithm satisfies the liveness property(Lemma~\ref{StaticRBLiveness}), 
 the first safety property(Lemma~\ref{StaticRBSafety1}),
@@ -219,12 +229,15 @@ Safety Property \#3: Assume some node $u$ passes a message $m$ to its environmen
 Per the algorithm, nodes only pass a message $m$ to their environment when they receive $m$ from their parent in the tree. A given node has only one parent and so only receives $m$ once.
 \end{proof}
 
+
+
+
 \subsection {Reliable Broadcast with Staggered Activation}
 
-\begin{lemma}
+\begin{theorem}
 \label{StaggeredReliableBroadcast}
 The algorithm solves the reliable broadcast problem with staggered activation.
-\end{lemma}
+\end{theorem}
 \begin{proof}
 This algorithm satisfies the liveness property(Lemma~\ref{StaggeredRBLiveness}), 
 the first safety property(Lemma~\ref{StaggeredRBSafety1}),
@@ -310,19 +323,17 @@ Safety Property \#3: Assume some node $u$ passes a message $m$ to its environmen
 
 
 
-\subsection {Reliable Broadcast with Deactivations}
+\subsection {Reliable Broadcast with Activations and Deactivations}
 
-
-
-\begin{lemma}
+\begin{theorem}
 \label{DeactivationReliableBroadcast}
 The algorithm solves the reliable broadcast problem with deactivations.
-\end{lemma}
+\end{theorem}
 \begin{proof}
 This algorithm satisfies the liveness property(Lemma~\ref{DeactivationRBLiveness}), 
 the first safety property(Lemma~\ref{DeactivationRBSafety1}),
 the second safety property(Lemma~\ref{DeactivationRBSafety2}) and 
-the third safety property(Lemma~\ref{DeactivationRBSafety3}) of the reliable broadcast problem with deactivations.
+the third safety property(Lemma~\ref{DeactivationRBSafety3}) of the reliable broadcast problem with activations and deactivations.
 \end{proof}
 
 \begin{lemma}
@@ -336,6 +347,17 @@ By the algorithm, $u$ will send  a ``done'' signal to $E_u$ using the \textit{ac
 \end{proof}
 
 \begin{lemma}
+\label{RBDeactivationReceive}
+Every node in $A(r,r')$ sees $m$ within $n$ rounds
+\end{lemma}
+\begin{proof}
+
+By the model definition, the network is guaranteed to have the stability property of at worst 1-interval connectivity. In a network with 1-interval connectivity where nodes broadcast every round, a message is guaranteed to be seen for the first time by at least one node every round if there exists any node in the network has not seen the message (Distributed Computing in Dynamic Networks). After $n-1$ rounds of broadcasting message $m$ in a network with 1-interval connectivity where $n$ is the total number of nodes in the network, every node that was active for all $n-1$ rounds will have seen $m$.
+
+\end{proof}
+
+
+\begin{lemma}
 \label{DeactivationRBSafety1}
 The algorithm satisfies the first safety property of the reliable broadcast problem with staggered activation.
 \end{lemma}
@@ -346,15 +368,6 @@ Every node in $A(r,r')$ sees $m$ within $n$ rounds (Lemma~\ref{RBDeactivationRec
 
 \end{proof}
 
-\begin{lemma}
-\label{RBDeactivationReceive}
-Every node in $A(r,r')$ sees $m$ within $n$ rounds
-\end{lemma}
-\begin{proof}
-
-By the model definition, the network is guaranteed to have the stability property of at worst 1-interval connectivity. In a network with 1-interval connectivity where nodes broadcast every round, a message is guaranteed to be seen for the first time by at least one node every round if there exists any node in the network has not seen the message (Distributed Computing in Dynamic Networks). After $n-1$ rounds of broadcasting message $m$ in a network with 1-interval connectivity where $n$ is the total number of nodes in the network, every node that was active for all $n-1$ rounds will have seen $m$.
-
-\end{proof}
 
 \begin{lemma}
 \label{DeactivationRBSafety2}
