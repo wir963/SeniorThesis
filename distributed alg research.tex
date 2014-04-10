@@ -265,14 +265,37 @@ the third safety property(Lemma~\ref{StaggeredRBSafety3}) of the reliable broadc
 \end{proof}
 
 \begin{lemma}
+\label{StaggeredStablePath}
+The path from the leader of a tree to any node in the tree will not change with the activation of any node.
+\end{lemma}
+\begin{proof}
+Every node is connected to the leader through their parent and nodes do not change their parent once they have joined the tree.
+\end{proof}
+
+\begin{lemma}
+\label{StaggeredSpanningTreePropagation}
+In the staggered activation case, a given node $u$ that receives a message $m$ at round $r$ will eventually send a confirmation message to its parent. 
+\end{lemma}
+\begin{proof}
+
+ If $u$ is a leaf node at round $r+2$, $u$ will immediately send a confirmation message so any nodes joining the tree as children of $u$ won't affect the propagation of the confirm message up the tree. 
+
+If $u$ is a non-leaf node at round $r+2$, $u$ will broadcast $m$. All active nodes that consider $u$ to be their parent before $r+2$, will process $m$. If a node $v$ considers $u$ to be its parent at round $r+2$, $u$ will consider $v$ to be its child no later than round $r+3$. According to the algorithm, $u$ will only wait to hear confirm messages from nodes that it considers to be its children at the end of round $r+3$ so $u$ will only wait to hear from nodes that processed $m$ and are guaranteed to eventually send a confirm message to $u$. 
+
+As a result, $u$ is guaranteed to send a confirm message to its parent. 
+
+\end{proof}
+
+\begin{lemma}
 \label{StaggeredRBLiveness}
 The algorithm satisfies the liveness property of the reliable broadcast problem with staggered activation.
 \end{lemma}
 \begin{proof}
-Liveness Property: If a node $u$ running algorithm $\cal A$ is passed a message by $E_u$ through its \textit{send} command, $u$ will eventually send  a ``done'' signal to $E_u$ using the \textit{acknowledge} command.
 
-(Lemma~\ref{StaticRBLiveness})
-% what to do if identical proof? I do need to look at coming up with a O(time) to strengthen liveness
+Assume node $u$ running algorithm $\cal A$ is passed a message $m$ by $E_u$ through its \textit{send} command. When $u$ is a confirmed member of the spanning tree, it sends $m$ to the leader of the tree. There will be a stable path between $u$ and the leader so $m$ is guaranteed to reach the leader (Lemma~\ref{StaggeredStablePath}). When $m$ reaches the leader, it is placed in its send queue. Eventually, $m$ reaches the front of the send queue and is dequeued by the leader. The leader broadcasts $m$ to the network and eventually receives a confirm message that all the nodes in the network have seen $m$ (Lemma~\ref{StaggeredSpanningTreePropagation}). When the leader has received confirmation messages from all of its children, it will notify $u$ using the same stable path. When $u$ receives this message from the leader, it sends  a ``done'' signal to $E_u$ using the \textit{acknowledge} command.
+
+
+
 \end{proof}
 
 
@@ -281,10 +304,9 @@ Liveness Property: If a node $u$ running algorithm $\cal A$ is passed a message 
 The algorithm satisfies the first safety property of the reliable broadcast problem with staggered activation.
 \end{lemma}
 \begin{proof}
-Safety Property \#1: Assume node $u$ is passed a message $m$ by $E_u$ at round $r$ and $u$ sends  a ``done'' signal in some later round $r'$. Let $A(r,r')$ be the set of nodes that are active in every round in the interval from $r$ to $r'$. It must be the case that every node in $A(r,r')$ passes message $m$ to its environment through its \textit{receive} command at some point between rounds $r$ and $r'$. 
 
 Assume node $u$ is passed a message $m$ by $E_u$ at round $r$ and $u$ sends  a ``done'' signal in some later round $r'$.
-In the staggered activation case, $A(r,r')$ is identical to $A(r)$ which is the set of all nodes that have activated by round $r$. If all the nodes in $A(r,r')$ are part of the spanning tree of by round $r$, this is identical to the first safety property in the case of simultaneous activation given that the activation of any nodes won't affect the path between a node and the leader (Lemma~\ref{StablePath}). 
+In the staggered activation case, $A(r,r')$ is identical to $A(r)$ which is the set of all nodes that have activated by round $r$. If all the nodes in $A(r,r')$ are part of the spanning tree of by round $r$, this is identical to the first safety property in the case of simultaneous activation given that the activation of any nodes won't affect the path between a node and the leader (Lemma~\ref{StaggeredStablePath}). 
 
 Otherwise, the nodes that aren't part of the tree before round $r$ will become part of the tree in time to receive the message (Lemma~\ref{RBSafety1ByInduction}). 
 
@@ -298,22 +320,15 @@ Otherwise, the nodes that aren't part of the tree before round $r$ will become p
 
 \noindent Base Case $q=0$: A node $u$ that is zero hops away from the tree is part of the tree and will receive the message $m$ (Lemma~\ref{StaticRBSafety1}).
 
-\noindent Base Case $q=1$: A node $u$ that is one hop from the tree before round $r$ will be a confirmed member of the tree before round $r+2$. During round $r$, $u$ receives a broadcast from $v$, its neighbor that is part of the tree, telling it to join the tree. During round $r+1$, $u$ responds to $v$ telling $v$ that it has chosen $v$ as its parent. As a result, before round $r+2$, $u$ is a confirmed member of the tree. By the algorithm, once a node receives a message to send to the rest of the tree, that node waits two additional rounds before sending it to its children or replying done to its parent if it has no children. 
-
 \noindent Inductive Hypothesis: Suppose the theorem holds for all values of $q$ up to $k$
 
 \noindent Inductive Step: Let $q=k+1$.
 
 $v$, the node that is $k$ hops from the tree at round $r$, receives $m$ at a later round $r'$. For $v$ to have received $m$ in round $r'$, it must have been a confirmed member of the tree in round $r'$. As a confirmed member of the tree, $v$ must have broadcast a message telling its neighbors to join the tree. $u$, which is a neighbor of $v$, receives this message in round $r'$ and is a confirmed member of the tree by round $r'+1$. As the parent of $u$, $v$ will broadcast $m$ to $u$ in round $r'+3$ after the two round wait period.
+
 \end{proof}
 
-\begin{lemma}
-\label{StablePath}
-The path from the leader of a tree to any node in the tree will not change with the activation of any node.
-\end{lemma}
-\begin{proof}
-Every node is connected to the leader through their parent and nodes do not change their parent once they have joined the tree.
-\end{proof}
+
 
 \begin{lemma}
 \label{StaggeredRBSafety2}
