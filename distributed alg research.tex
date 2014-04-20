@@ -123,22 +123,24 @@ In the leader election protocol, the source of a BFS instance started by node $u
 Once the leader has been elected and sent a confirm message through the tree, it is still possible for nodes to activate. When a node is a confirmed member of the spanning tree, it broadcasts a message at the beginning of every round declaring that it is part of the spanning tree and telling its neighbors to join. When a node $u$ activates, it follows the leader election protocol and attempts to start a tree with itself as source. If $u$ has a neighbor $v$ that is part of the spanning tree, $u$ will receive $v$'s message, join the spanning tree and choose $v$ as its parent in the tree. If $u$ does not have a neighbor that is part of the spanning tree, it is connected to a node belonging to the tree by the defintion of the model and eventually one of its neighbor will join the spanning tree and then $u$ will join the spanning tree.
 
 
-  \subsection {Reliable Broadcast with Staggered Activation and Deactivation}
+  \subsection {Reliable Broadcast with Staggered and Repeated Activations and Deactivations}
 
-The algorithm for reliable broadcast with staggered activation and deactivation is completely different from the algorithm for reliable broadcast with only activations. 
-
-
-In contrast, the deactivation case does not involve electing a leader or building a stable spanning tree. Instead, a node floods the network with the message and the exact global round to execute the \textit{receive} command on the message.
+The algorithm for reliable broadcast with staggered and repeated activations and deactivations is completely different from the algorithm for reliable broadcast with only activations. In contrast, the deactivation case does not involve running SynchBFS to elect a leader or rely on a stable tree. Instead, a node floods the network with the message and the exact global round to execute the \textit{receive} command on the message.
 
 
 A node $u$ receives a message $m$ from its environment at round $r$ using the \textit{send} command. $u$ broadcasts message $m$, with the instructions that every node that receives $m$ should execute the \textit{receive} command on $m$ at a specified round $r'$ where $r'$ = $r$+$n$ where n is an upper bound on the number of nodes in the network. $u$ will execute the \textit{acknowledge} command on $m$ at round $r' + 1$.
+
 
 If a node has multiple \textit{receive} commands to execute in the same round, it executes them in ascending order of the UID of the source node of the message, which is attached to the message. Every node maintains an internal list of messages. At the beginning of every round, every node will broadcast all of the messages. When a node executes a \textit{receive} command on a message, it removes that message from its internal list.  When a node hears a broadcast about a message for the first time, it adds that message to its internal list.
 
 
 \section{Analysis}
 
-\subsection{Leader Election with Simultaneous Activation}
+In this section, we prove the correctness of the three separate algorithms presented in this paper. The analysis sections for the first two algorithms begin with a proof of the leader election protocol in their respectives settings as correct leader election is integral to the reliable broadcast protocols.
+
+\subsection {Reliable Broadcast with Simultaneous Activation}
+
+\subsubsection{Leader Election Protocol}
 
 \begin{theorem}
 \label{LeaderElectionStatic}
@@ -158,7 +160,6 @@ Let $u_{min}$ be the ID of the process with the minimum UID in the network.
 Let BFS instance $b_i$ refer to an instance of the terminating breadth-first search protocol initiated by process with ID i.
 \end{definition}
 
-
 \begin{lemma}
 \label{LELivenessStatic}
   One node will eventually set its variable leader to true.
@@ -167,7 +168,6 @@ Let BFS instance $b_i$ refer to an instance of the terminating breadth-first sea
 A BFS instance $b_i$ will eventually terminate if every node in the network runs $b_i$. 
 Every node in the network will eventually run $b_{u_{min}}$ so $b_{u_{min}}$ will eventually terminate and the process with ID $u_{min}$ will set leader = true.
 \end{proof}
-
 
 \begin{lemma}
 \label{BFSTermination}
@@ -190,64 +190,7 @@ A BFS tree $b_i$ will terminate only if $i$ equals $u_{min}$ (Lemma~\ref{BFSTerm
 Only the process with ID $u_{min}$ will set leader = true. 
 \end{proof}
 
-
-
-
-\subsection{Leader Election with Staggered Activation}
-
-\begin{theorem}
-\label{LeaderElectionStaggered}
-
-A node will eventually elect itself leader and no more than one node will have leader equal to true at the beginning of any round. 
-\end{theorem}
-\begin{proof}
-One node will eventually elect itself leader (Lemma~\ref{LELivenessStaggered}).
-No more than one node will have leader set to true at any point (Lemma~\ref{LESafetyStaggered}).
-\end{proof}
-
-\begin{definition}
-Let $u_{min}$ be the ID of the process with the minimum global round of activation and the minimum UID  of the nodes that at that round in the network. 
-\end{definition}
-
-\begin{definition}
-Let BFS instance $b_i$ refer to an instance of the terminating breadth-first search protocol initiated by process with ID i.
-\end{definition}
-
-
-\begin{lemma}
-\label{LELivenessStaggered}
-  One node will eventually set its variable leader to true.
-\end{lemma}
-\begin{proof}
-A BFS instance $b_i$ will eventually terminate if every node in the network runs $b_i$. 
-Every node in the network will eventually run $b_{u_{min}}$ so $b_{u_{min}}$ will eventually terminate and the process with ID $u_{min}$ will set leader = true.
-\end{proof}
-
-
-\begin{lemma}
-\label{BFSTerminationStaggered}
-  A BFS instance $b_i$ will only terminate if $i$ equals $u_{min}$.
-\end{lemma}
-\begin{proof}
-Termination of a BFS instance $b_j$ requires all other processes in the network to send a done message to $b_j$.
-Given BFS instance $b_j$ where $j$ \textgreater $u_{min}$, there is at least one process, the process with ID $u_{min}$, that will never reply done to $b_j$. The process with ID $u_{min}$ will have been activate before or at the same round as every process in the network, including the process with ID $j$, so $j$ will require the process with ID $u_{min}$ to reply done, which it never will.
-Therefore, $b_j$ will never terminate.
-\end{proof}
-
-
-\begin{lemma}
-\label{LESafetyStaggered}
-For every round $r$, at most one node has leader = true at the beginning of $r$.
-\end{lemma}
-\begin{proof}
-A node with ID $i$ will only set leader = true if the BFS instance $b_i$ terminates.
-A BFS tree $b_i$ will terminate only if $i$ equals $u_{min}$ (Lemma~\ref{BFSTerminationStaggered}).
-Only the process with ID $u_{min}$ will set leader = true. 
-\end{proof}
-
-
-
-\subsection {Reliable Broadcast with Simultaneous Activation}
+\subsubsection {Reliable Broadcast Protocol}
 
 \begin{theorem}
 \label{StaticReliableBroadcast}
@@ -321,6 +264,61 @@ Per the algorithm, nodes only pass a message $m$ to their environment when they 
 
 
 \subsection {Reliable Broadcast with Staggered Activation}
+
+\subsubsection{Leader Election Protocol}
+
+\begin{theorem}
+\label{LeaderElectionStaggered}
+
+A node will eventually elect itself leader and no more than one node will have leader equal to true at the beginning of any round. 
+\end{theorem}
+\begin{proof}
+One node will eventually elect itself leader (Lemma~\ref{LELivenessStaggered}).
+No more than one node will have leader set to true at any point (Lemma~\ref{LESafetyStaggered}).
+\end{proof}
+
+\begin{definition}
+Let $u_{min}$ be the ID of the process with the minimum global round of activation and the minimum UID  of the nodes that at that round in the network. 
+\end{definition}
+
+\begin{definition}
+Let BFS instance $b_i$ refer to an instance of the terminating breadth-first search protocol initiated by process with ID i.
+\end{definition}
+
+
+\begin{lemma}
+\label{LELivenessStaggered}
+  One node will eventually set its variable leader to true.
+\end{lemma}
+\begin{proof}
+A BFS instance $b_i$ will eventually terminate if every node in the network runs $b_i$. 
+Every node in the network will eventually run $b_{u_{min}}$ so $b_{u_{min}}$ will eventually terminate and the process with ID $u_{min}$ will set leader = true.
+\end{proof}
+
+
+\begin{lemma}
+\label{BFSTerminationStaggered}
+  A BFS instance $b_i$ will only terminate if $i$ equals $u_{min}$.
+\end{lemma}
+\begin{proof}
+Termination of a BFS instance $b_j$ requires all other processes in the network to send a done message to $b_j$.
+Given BFS instance $b_j$ where $j$ \textgreater $u_{min}$, there is at least one process, the process with ID $u_{min}$, that will never reply done to $b_j$. The process with ID $u_{min}$ will have been activate before or at the same round as every process in the network, including the process with ID $j$, so $j$ will require the process with ID $u_{min}$ to reply done, which it never will.
+Therefore, $b_j$ will never terminate.
+\end{proof}
+
+
+\begin{lemma}
+\label{LESafetyStaggered}
+For every round $r$, at most one node has leader = true at the beginning of $r$.
+\end{lemma}
+\begin{proof}
+A node with ID $i$ will only set leader = true if the BFS instance $b_i$ terminates.
+A BFS tree $b_i$ will terminate only if $i$ equals $u_{min}$ (Lemma~\ref{BFSTerminationStaggered}).
+Only the process with ID $u_{min}$ will set leader = true. 
+\end{proof}
+
+
+\subsubsection{Reliable Broadcast Protocol}
 
 \begin{theorem}
 \label{StaggeredReliableBroadcast}
