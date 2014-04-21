@@ -133,11 +133,13 @@ If a node has multiple \textit{receive} commands to execute in the same round, i
 
 \section{Analysis}
 
-In this section, we prove the correctness of the three separate algorithms presented in this paper. The analysis sections for the first two algorithms begin with a proof of the leader election protocol in their respectives settings as correct leader election is integral to the reliable broadcast protocols.
+In this section, we prove the correctness of the three algorithms presented in this paper. The analysis sections for the first two algorithms begin with a proof of the leader election subroutine in their respectives settings as correct leader election is integral to the reliable broadcast protocols.
 
 \subsection {Reliable Broadcast with Simultaneous Activation}
 
-\subsubsection{Leader Election Protocol}
+In this section, we prove the correctness of the algorithm assuming simultaneous activation of all nodes. First, we prove the correctness of the leader election subroutine and then we prove the correctness of the message dissemination subroutine.
+
+\subsubsection{Leader Election Subroutine}
 
 \begin{theorem}
 \label{LeaderElectionStatic}
@@ -187,7 +189,7 @@ A BFS tree $b_i$ will terminate only if $i$ equals $u_{min}$ (Lemma~\ref{BFSTerm
 Only the process with ID $u_{min}$ will set leader = true. 
 \end{proof}
 
-\subsubsection {Reliable Broadcast Protocol}
+\subsubsection {Message Dissemination Subroutine}
 
 \begin{theorem}
 \label{StaticReliableBroadcast}
@@ -262,7 +264,9 @@ Per the algorithm, nodes only pass a message $m$ to their environment when they 
 
 \subsection {Reliable Broadcast with Staggered Activation}
 
-\subsubsection{Leader Election Protocol}
+In this section, we prove the correctness of the algorithm assuming staggered activation of nodes. First, we prove the correctness of the leader election subroutine and then we prove the correctness of the message dissemination subroutine.
+
+\subsubsection{Leader Election Subroutine}
 
 \begin{theorem}
 \label{LeaderElectionStaggered}
@@ -315,7 +319,7 @@ Only the process with ID $u_{min}$ will set leader = true.
 \end{proof}
 
 
-\subsubsection{Reliable Broadcast Protocol}
+\subsubsection{Message Dissemination Subroutine}
 
 \begin{theorem}
 \label{StaggeredReliableBroadcast}
@@ -416,6 +420,8 @@ Per the algorithm, nodes only pass a message $m$ to their environment when they 
 
 
 \subsection {Reliable Broadcast with Activations and Deactivations}
+
+In this section, we prove the correctness of the algorithm allowing nodes to activate and deactivate.
 
 \begin{theorem}
 \label{DeactivationReliableBroadcast}
