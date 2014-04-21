@@ -99,62 +99,36 @@ An algorithm $A$ is said to solve the reliable broadcast problem if it implement
 
 \section{Algorithm}
 
-In the model section, we introduced three sets of restrictions on node behavior. Each set of restrictions requires its own algorithm. While the algorithms for the first and second set of restrictions share many similarities, they are very different from the algorithm for the third set of restrictions.
+In the model section, we introduced three sets of assumptions for node behavior with respect to activation and deactivation. Each set of assumptions requires its own algorithm. While the algorithms for the first two sets of assumptions share many similarities, they are very different from the algorithm for the third set of assumptions.
 
-assumptions instead of restrictions; on node activation and deactivation behavior, more specific than just node behavior
 
   \subsection {Reliable Broadcast with Simultaneous Activation}
 
-The first step of the algorithm is for each node to run the terminating synchronous breadth-first search algorithm (SynchBFS) as described and analyzed by Lynch~\cite{Lynch:1996}. The nodes will use SynchBFS to elect a leader as follows.
+The first step of the algorithm, the leader election subroutine, is for each node to run the terminating synchronous breadth-first search algorithm (SynchBFS) as described and analyzed by Lynch~\cite{Lynch:1996}. The nodes will use SynchBFS to elect a leader as follows. When a node $u$ activates, it starts running an instance of SynchBFS with itself as its source. The messages for SynchBFS include the ID of the source of that instance. Nodes stop participating in an instance of SynchBFS if they hear about an instance of SynchBFS with a smaller ID. Therefore only the SynchBFS instance started by the node with the minimum ID in the network will terminate. Once this instance of SynchBFS terminates, it's source will elect itself leader and disseminate a confirm message throughout the network in the manner described by Lynch~\cite{Lynch:1996}. When a node receives the confirm message, it becomes a confirmed member of the spanning tree rooted at the source of the SynchBFS instance that terminated. 
 
-When a node $u$ activates, it starts running an instance of SynchBFS with itself as its source. 
-The messages for SynchBFS include the ID of the source of that instance. The nodes stop participating in an instance of SynchBFS if they've heard about an instance of SynchBFS with a smaller ID. Therefore only the SynchBFS of the smallest node will terminate
-Node $u$ broadcasts ``search'' messages to its neighbors who become children of $u$ and begin to run this instance of SynchBFS if they haven't seen another instance of SynchBFS whose source ID is less than the ID of $u$. An instance of SynchBFS will eventually terminate if every node in the network is running it. When an instance of SynchBFS terminates, the source node of that instance will elect itself leader of the tree and broadcast a confirm message through the tree. - get rid of this
+The message dissemination subroutine begins when a node $u$ receives a message $m$ from $E_u$ using the \textit{send} command. While a node can receive a \textit{send} command from its environment at any point during execution, it won't begin the message dissemination subroutine until it has become a confirmed member of the tree. First, node $u$ sends the message $m$ to the leader of the network by broadcasting $m$ with the instructions that only its parent should forward $m$. Each node that forwards $m$ keeps track of from which child node it received $m$. Message $m$ continues to be passed up the tree from child to parent until it reaches the leader of the tree. Message $m$ is guaranteed to reach the leader because the leader is an ancestor of every node in the tree. When the leader receives a message, it adds that message to its send queue.
 
- When a node receives the confirm message, it becomes a confirmed member of the spanning tree rooted at the source of the SynchBFS instance that terminated. 
-
-
-The reliable broadcast protocol begins when a node $u$ receives a message $m$ from $E_u$ using the \textit{send} command. While a node can receive a \textit{send} command from its environment at any point during execution, it won't begin the protocol for disseminating the message throughout the tree until it has become a confirmed member of the tree.
-
-Next, node $u$ broadcasts message $m$ with the instructions that only its parent should forward $m$. Each node that forwards $m$ keeps track of from which child node it received $m$. Message $m$ continues to be passed up the tree from child to parent until it reaches the leader of the tree. Message $m$ is guaranteed to reach the leader because the leader is an ancestor of every node in the tree. When the leader receives a message, it adds that message to its send queue.
-
-Use disseminate instead of broadcast because broadcast is low level term (unless mean it in a low level sense)
-
-Use Lynch textbook 
-If a message is not being broadcast through the tree, the leader will dequeue the next message $m$, if any exists, off its send queue. Next, the leader will notify its environment of message $m$ using the \textit{receive} command and then broadcast $m$. Remove - to every node by initiating a terminating broadcast of the message over its BFS tree using the strategy described by Lynch.
-
- All of the children of the leader will receive $m$ and perform the same two actions as the leader, notifying their respective environments and broadcasting $m$, and in this way, $m$ will eventually be passed by every node to its environment. Every node will pass $m$ to its environment only once because a node will only process $m$ when it is sent by its parent and a node can only have one parent in the tree. A node that receives $m$ and doesn't have any children will send a message to their parent confirming that they have received message $m$. When a node has received confirmation messages from all of its children, it will send a message to its parent confirming that it (and all its children) have received $m$. When the leader has received confirmation messages from all of its children, the leader will dequeue the next message $m'$, if any exists, off its send queue and repeat the message dissemination sub-routines. 
+If a message is not being disseminated through the tree, the leader will dequeue the next message $m$, if any exists, off its send queue. Next, the leader will notify its environment of message $m$ using the \textit{receive} command and then broadcast $m$. All of the children of the leader will receive $m$ and perform the same two actions as the leader, notifying their respective environments and broadcasting $m$, and in this way, $m$ will eventually reach every node, which will pass $m$ to its environment only once because a node will only process $m$ when it is sent by its parent and a node can only have one parent in the tree. A node that receives $m$ and doesn't have any children will send a message to their parent confirming that they have received message $m$. When a node has received confirmation messages from all of its children, it will send a message to its parent confirming that it (and all its children) have received $m$. When the leader has received confirmation messages from all of its children, the leader will dequeue the next message $m'$, if any exists, off its send queue and repeat the message dissemination subroutine. 
 
 At the same time, the leader will send a message to $u$ telling it that all nodes in the network have received $m$. This message to $u$ follows the same path as the original message from $u$ to the leader as each node broadcasts it with the instruction that it only should be forwarded by the specified node, the child that sent it to the parent. When $u$ receives this message, it notifies its environment using its \textit{acknowledge} command.
 
-Describing three algorithms - sub-algorithms should be call sub-routines (not protocol)
 
   \subsection {Reliable Broadcast with Staggered Activation}
 
 The algorithm for reliable broadcast with simultaneous activation works for reliable broadcast with staggered activation with the following modifications.
 
-In the leader election protocol, the source of a BFS instance started by node $u$ is now identified by the combination of the global round when $u$ activated and the ID of $u$. A node will stop running instances when they see smaller ids; A node will choose to run the BFS instance whose source has the lowest global round of activation. If the sources of multiple BFS instances have the same global round of activation, a node will choose the BFS instance whose source has the lowest ID. By the definition of the model, nodes have unique IDs so multiples BFS instances won't have the same ID.
+In the leader election subroutine, the source of a SynchBFS instance started by node $u$ is now identified by the combination of the global round when $u$ activated and the ID of $u$. A node will stop running instances when they see smaller ids; A node will stop running a SynchBFS instance if it hears about a SynchBFS instance with a lowest global round of activation or a SynchBFS instance with the same global round of activation and a smaller ID. By the definition of the model, nodes have unique IDs so multiples BFS instances won't have the same ID.
 
-Once the leader has been elected and sent a confirm message through the tree, it is still possible for nodes to activate. When a node is a confirmed member of the spanning tree, it broadcasts a message at the beginning of every round declaring that it is part of the spanning tree and telling its neighbors to join. 
-
-When a node $u$ activates, it follows the leader election protocol and attempts to start a tree with itself as source. If at any point during running the LE sub-routine sees a confirm message, it will
-
-
-If $u$ has a neighbor $v$ that is part of the spanning tree, $u$ will receive $v$'s message, join the spanning tree and choose $v$ as its parent in the tree. If $u$ does not have a neighbor that is part of the spanning tree, it is connected to a node belonging to the tree by the defintion of the model and eventually one of its neighbor will join the spanning tree and then $u$ will join the spanning tree.
+When a node is a confirmed member of the spanning tree, it broadcasts a message at the beginning of every round declaring that it is part of the spanning tree and telling its neighbors to join. Once the leader has been elected and sent a confirm message through the tree, it is still possible for nodes to activate. When a node $u$ activates, it follows the leader election subroutine. If at any point during running the leader election subroutine $u$ receives a confirm message, it will stop running its instance of SynchBFS, join the spanning tree rooted at the leader and begin the message dissemination protocol.
 
 
   \subsection {Reliable Broadcast with Activations and Deactivations}
 
-The algorithm for reliable broadcast with activations and deactivations is quite different from the algorithm for reliable broadcast with only activations. The deactivation case does not involve running SynchBFS to elect a leader or rely on a stable tree. Instead, it relies on message flooding through the network
+The algorithm for reliable broadcast with activations and deactivations is very different from the algorithms for reliable broadcast with only activations. The deactivation case does not involve running SynchBFS to elect a leader or rely on a stable tree. Instead, it relies on flooding messages through the network.
 
+In more detail, when a node $u$ receives a message $m$ from its environment at round $r$ using the \textit{send} command, $u$ disseminates $m$ through the network, with the instructions that every node that receives $m$ should execute the \textit{receive} command on $m$ at a specified round $r'$. The round of execution $r'$ is equal to round $r$ + $n$ where $n$ is an upper bound on the number of nodes in the network. The node $u$ will execute the \textit{acknowledge} command on $m$ at round $r' + 1$.
 
-a node floods the network with the message and the exact global round to execute the \textit{receive} command on the message. - make even simpler
-
-
-In more detail, when a node $u$ receives a message $m$ from its environment at round $r$ using the \textit{send} command, (double check) $u$ broadcasts message $m$, with the instructions that every node that receives $m$ should execute the \textit{receive} command on $m$ at a specified round $r'$ where $r'$ = $r$+$n$ where n is an upper bound on the number of nodes in the network. $u$ will execute the \textit{acknowledge} command on $m$ at round $r' + 1$. - improve quality of sentences/ clarity
-
-
-If a node has multiple \textit{receive} commands to execute in the same round, it executes them in ascending order of the UID of the source node of the message, which is attached to the message. Every node maintains an internal list of messages. At the beginning of every round, every node will broadcast all of the messages. When a node executes a \textit{receive} command on a message, it removes that message from its internal list.  When a node hears a broadcast about a message for the first time, it adds that message to its internal list.
+If a node has multiple \textit{receive} commands to execute in the same round, it executes them in ascending order of the ID of the message, which is the ID of the node that received the message from its environment. Every node in the network maintains an internal list of messages. At the beginning of every round, a node will broadcast all of the messages. When a node hears a broadcast about a message for the first time, it adds that message to its internal list. At the end of every round, a node checks its list of messages and executes a \textit{receive} command on the message(s), which correspond to the given round and remove all messages that correspond to previous rounds from its internal list.  
 
 
 \section{Analysis}
