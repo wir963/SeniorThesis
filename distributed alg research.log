@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  21 APR 2014 18:43
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  22 APR 2014 21:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -329,31 +329,31 @@ LaTeX Warning: Citation `Gao:2012' on page 2 undefined on input line 51.
 
 [2]
 
-LaTeX Warning: Citation `Lynch:1996' on page 3 undefined on input line 61.
+LaTeX Warning: Citation `Lynch:1996' on page 3 undefined on input line 60.
 
 
-LaTeX Warning: Citation `Kuhn:2010' on page 3 undefined on input line 61.
+LaTeX Warning: Citation `Kuhn:2010' on page 3 undefined on input line 60.
 
 [3] [4]
 
-LaTeX Warning: Citation `Lynch:1996' on page 5 undefined on input line 107.
+LaTeX Warning: Citation `Lynch:1996' on page 5 undefined on input line 106.
 
 
-LaTeX Warning: Citation `Lynch:1996' on page 5 undefined on input line 107.
+LaTeX Warning: Citation `Lynch:1996' on page 5 undefined on input line 106.
 
-[5]
-Overfull \hbox (1.15427pt too wide) in paragraph at lines 125--125
+[5] [6]
+Overfull \hbox (1.15427pt too wide) in paragraph at lines 124--124
 []\T1/cmr/bx/n/12 Reliable Broad-cast with Ac-ti-va-tions and De-ac-ti-va-tions
  
  []
 
-[6] [7] [8] [9] [10] [11]
-Underfull \hbox (badness 10000) in paragraph at lines 371--372
+[7] [8] [9] [10] [11]
+Underfull \hbox (badness 10000) in paragraph at lines 370--371
 
  []
 
 [12]
-Overfull \hbox (1.15427pt too wide) in paragraph at lines 422--422
+Overfull \hbox (1.15427pt too wide) in paragraph at lines 421--421
 []\T1/cmr/bx/n/12 Reliable Broad-cast with Ac-ti-va-tions and De-ac-ti-va-tions
  
  []
@@ -369,7 +369,7 @@ LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 Here is how much of TeX's memory you used:
  4657 strings out of 493315
  61727 string characters out of 6137904
- 150209 words of memory out of 5000000
+ 149208 words of memory out of 5000000
  8033 multiletter control sequences out of 15000+600000
  17601 words of font info for 50 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
@@ -390,7 +390,7 @@ e/2013/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/
 13/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2013
 /texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/local/texlive/2013/t
 exmf-dist/fonts/type1/public/cm-super/sfti1000.pfb>
-Output written on "distributed alg research.pdf" (14 pages, 249288 bytes).
+Output written on "distributed alg research.pdf" (14 pages, 250596 bytes).
 PDF statistics:
  111 PDF objects out of 1000 (max. 8388607)
  79 compressed objects within 1 object stream
