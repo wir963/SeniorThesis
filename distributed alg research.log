@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  22 APR 2014 21:12
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  23 APR 2014 12:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -347,18 +347,35 @@ Overfull \hbox (1.15427pt too wide) in paragraph at lines 124--124
  
  []
 
-[7] [8] [9] [10] [11]
-Underfull \hbox (badness 10000) in paragraph at lines 370--371
+[7] [8] [9]
+
+LaTeX Warning: Reference `StaticMessageDissemination' on page 10 undefined on i
+nput line 246.
+
+
+LaTeX Warning: Reference `StaticStablePath' on page 10 undefined on input line 
+248.
+
+
+LaTeX Warning: Reference `StaticConfirmationMessage' on page 10 undefined on in
+put line 250.
+
+
+LaTeX Warning: Reference `StaticStablePath' on page 10 undefined on input line 
+250.
+
+[10] [11] [12]
+Underfull \hbox (badness 10000) in paragraph at lines 396--397
 
  []
 
-[12]
-Overfull \hbox (1.15427pt too wide) in paragraph at lines 421--421
+[13]
+Overfull \hbox (1.15427pt too wide) in paragraph at lines 447--447
 []\T1/cmr/bx/n/12 Reliable Broad-cast with Ac-ti-va-tions and De-ac-ti-va-tions
  
  []
 
-[13] [14] (./distributed alg research.aux)
+[14] [15] (./distributed alg research.aux)
 
 LaTeX Warning: There were undefined references.
 
@@ -367,10 +384,10 @@ LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
  ) 
 Here is how much of TeX's memory you used:
- 4657 strings out of 493315
- 61727 string characters out of 6137904
- 149208 words of memory out of 5000000
- 8033 multiletter control sequences out of 15000+600000
+ 4660 strings out of 493315
+ 61800 string characters out of 6137904
+ 150209 words of memory out of 5000000
+ 8036 multiletter control sequences out of 15000+600000
  17601 words of font info for 50 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
  38i,6n,26p,1202b,199s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -390,10 +407,10 @@ e/2013/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/
 13/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2013
 /texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/local/texlive/2013/t
 exmf-dist/fonts/type1/public/cm-super/sfti1000.pfb>
-Output written on "distributed alg research.pdf" (14 pages, 250596 bytes).
+Output written on "distributed alg research.pdf" (15 pages, 254713 bytes).
 PDF statistics:
- 111 PDF objects out of 1000 (max. 8388607)
- 79 compressed objects within 1 object stream
+ 114 PDF objects out of 1000 (max. 8388607)
+ 81 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
