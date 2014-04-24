@@ -457,60 +457,61 @@ The only way in which $u$ will receive a message $m$ to pass to its environment 
 
 
 
-\subsection {Reliable Broadcast with Activations and Deactivations}
+\subsection {Variable Activation and Deactivation Reliable Broadcast}
 
-In this section, we prove the correctness of the algorithm allowing nodes to activate and deactivate.
+In this section, we prove the correctness of the algorithm assuming variable activation and deactivation of nodes. This section differs considerably from the previous sections in that it does not have a proof of correctness for leader election as this algorithm does not have a leader election subroutine. This section proves correct the variable activation and deactivation reliable broadcast algorithm by separately proving the four properties of reliable broadcast.
 
 \begin{theorem}
 \label{DeactivationReliableBroadcast}
-The algorithm solves the reliable broadcast problem with activations and deactivations.
+The variable activation and deactivation reliable broadcast algorithm correctly implements a reliable broadcast service under the assumption of variable activation and deactivation of nodes.
 \end{theorem}
 \begin{proof}
-This algorithm satisfies the liveness property(Lemma~\ref{DeactivationRBLiveness}), 
+The variable activation and deactivation reliable broadcast algorithm satisfies the liveness property(Lemma~\ref{DeactivationRBLiveness}), 
 the first safety property(Lemma~\ref{DeactivationRBSafety1}),
 the second safety property(Lemma~\ref{DeactivationRBSafety2}) and 
-the third safety property(Lemma~\ref{DeactivationRBSafety3}) of the reliable broadcast problem with activations and deactivations.
+the third safety property(Lemma~\ref{DeactivationRBSafety3}) of the reliable broadcast service assuming variable activation and deactivation of nodes.
 \end{proof}
 
 \begin{lemma}
 \label{DeactivationRBLiveness}
-The algorithm satisfies the liveness property of the reliable broadcast problem with activations and deactivations.
+The variable activation and deactivation reliable broadcast algorithm satisfies the liveness property of the reliable broadcast problem assuming variable activation and deactivation of nodes.
 \end{lemma}
 \begin{proof}
 
-By the algorithm, $u$ will send  a ``done'' signal to $E_u$ using the \textit{acknowledge} command after n+1 rounds. The only way $u$ will not send the ``done'' signal is if $u$ deactivates, which is acceptable under liveness.
+By the definition of the algorithm, $u$ will send  a ``done'' signal to $E_u$ using the \textit{acknowledge} command after n+1 rounds. The only way $u$ will not send the ``done'' signal is if $u$ deactivates, which is acceptable under our definition of liveness.
 \end{proof}
 
 \begin{lemma}
 \label{RBDeactivationReceive}
-Every node in $A(r,r')$ sees $m$ within $n$ rounds
+For round $r$ and a later round $r' = r + n + 1$, every node in $A(r,r')$ will receive by round $r'-1$ a message $m$ broadcasted by node $u$ during round $r$
 \end{lemma}
 \begin{proof}
 
-By the model definition, the network is guaranteed to have the stability property of at worst 1-interval connectivity. In a network with 1-interval connectivity where nodes broadcast every round, a message is guaranteed to be seen for the first time by at least one node every round if any node in the network has not yet seen the message (Distributed Computing in Dynamic Networks). After $n-1$ rounds of broadcasting message $m$ in a network with 1-interval connectivity where $n$ is the total number of nodes in the network, every node that was active for all $n-1$ rounds will have seen $m$.
+By the model definition, the active subset of the network graph is connected as a single component before the beginning of every round. In the worst case, the active subset of the network graph will satisfy the 1-interval connectivity property \cite{Kuhn:2010}. K-interval connectivity stipulates that there must exist a stable connected spanning sub-graph for every K consecutive rounds. If the active subset of the network graph is connected before the beginning of every round and nodes do not deactivate during a round of execution, 1-interval connectivity must hold under the assumption of variable activation and deactivation of nodes. 
+
+As proven by Kuhn~et~al, information can be disseminated between nodes in a network with 1-interval connectivity in $n'$ rounds where $n'$ is the size of the network \cite{Kuhn:2010}. In the variable activation and deativation reliable broadcast algorithm, the pieces of information being disseminated are the messages received by nodes from their environment. This proof only holds for nodes that activated before round $r$ and do not deactivate before round $r'$ because Kuhn~et~al did not examine networks where nodes activate and deactivate. $A(r,r')$ is the subset of nodes that activate before round $r$ and do not deactivate before round $r'$ so every node in $A(r,r')$ will receive any piece of information, including message $m$, that is disseminated during round $r$ by round $r'-1$.
 
 \end{proof}
 
 
 \begin{lemma}
 \label{DeactivationRBSafety1}
-The algorithm satisfies the first safety property of the reliable broadcast problem with staggered activation.
+The variable activation and deactivation reliable broadcast algorithm satisfies the first safety property of the reliable broadcast problem assuming variable activation and deactivation of nodes.
 \end{lemma}
 \begin{proof}
 
-
-Every node in $A(r,r')$ sees $m$ within $n$ rounds (Lemma~\ref{RBDeactivationReceive}). By definition of the algorithm, every node that receives $m$ passes $m$ to its environment during round $r'-1$. Therefore, every node in $A(r,r')$ passes $m$ to its environment during round $r'-1$, which is between round $r$ and round $r'$.
+For round $r$ and a later round $r' = r + n + 1$, every node in $A(r,r')$ will receive message $m$ broadcasted by node $u$ during round $r$ (Lemma~\ref{RBDeactivationReceive}). By definition of the algorithm, message $m$ will have an execution round of $r'-1$ if it is received by $u$ from its environment at round $r$. If a message $m'$ has an execution round of $r''$, any node that receives $m'$ and is active for round $r''$ will pass $m$ to its environment during round $r''$. Therefore, every node that receives $m$ and is active for round $r'-1$, which is a superset of $A(r,r')$ will pass message $m$ to its environment during round $r'-1$, which is between round $r$ and round $r'$.
 
 \end{proof}
 
 
 \begin{lemma}
 \label{DeactivationRBSafety2}
-The algorithm satisfies the third safety property of the reliable broadcast problem with deactivation.
+The variable activation and deactivation reliable broadcast algorithm satisfies the second safety property of the reliable broadcast problem assuming variable activation and deactivation of nodes.
 \end{lemma}
 \begin{proof}
 
-By definition of the algorithm, every node that receives a message will pass that message to its environment at a pre-determined round. Assume two messages, $m$ and $m'$, are received by multiple nodes. $m$ will be executed by all nodes at round $r$ and $m'$ will be executed by all nodes at round $r'$.
+By the definition of the algorithm, every node that receives a message $m$ will pass $m$ to its environment at a pre-determined round, called the execution round of message $m$. Assume two messages, $m$ and $m'$, are received by multiple nodes. Let round $r$ be the execution round of message $m$ and let round $r'$ be the execution round of message $m'$.
 
 If $r$ is greater than $r'$, then all nodes that receive $m$ and $m'$ and are active for both $r$ and $r'$ will pass $m'$ to their environment before they pass $m$. If $r'$ is greater than $r$, then all nodes will that receive $m$ and $m'$ and are active for both $r$ and $r'$ will pass $m$ to their environment before they pass $m'$.
 
@@ -527,7 +528,10 @@ The algorithm satisfies the third safety property of the reliable broadcast prob
 \end{lemma}
 \begin{proof}
 
-Per the algorithm, nodes keep a list of messages to execute and only add a message $m$ if $m$ is not already in the list. A node will only execute message $m$ at its specified round if $m$ is in its list at that round.
+The third safety property of reliable broadcast service assuming variable activation and deactivation requires that if a node $u$ passes a message $m$ to its environment, it has not passed $m$ to its environment before and some node in the network previously received $m$ from its environment. By definition of the algorithm, any node $u$ maintains a list of every unique message that it has received with a round of execution greater than or equal to round $r$ where $r$ is the current global round of execution. Since node $u$ only passes messages to its environment from its list, which will only have a single copy of each message, $u$ will only pass each message to its environment one time. 
+
+By the definition of the algorithm, the only way for a node will only add a message $m$ to its list without receiving a message from a neighbor, is if it received $m$ from its environment.
+
 
 \end{proof}
 
