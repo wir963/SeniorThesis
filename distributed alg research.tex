@@ -101,29 +101,29 @@ An algorithm $A$ is said to solve the reliable broadcast problem if it implement
 In the model section, we introduced three sets of assumptions for node behavior with respect to activation and deactivation. Each set of assumptions requires its own algorithm. While the algorithms for the first two sets of assumptions share many similarities, they are very different from the algorithm for the third set of assumptions.
 
 
-  \subsection {Reliable Broadcast with Simultaneous Activation}
+  \subsection {Simultaneous Activation Reliable Broadcast Algorithm}
 
 The first step of the algorithm, the leader election subroutine, is for each node to run the terminating synchronous breadth-first search algorithm (SynchBFS) as described and analyzed by Lynch~\cite{Lynch:1996}. The nodes will use SynchBFS to elect a leader as follows. When a node $u$ activates, it starts running an instance of SynchBFS with itself as its source. The messages for SynchBFS include the ID of the source of that instance. Nodes stop participating in an instance of SynchBFS if they hear about an instance of SynchBFS with a smaller ID. Therefore only the SynchBFS instance started by the node with the minimum ID in the network will terminate. Once this instance of SynchBFS terminates, it's source will elect itself leader and disseminate a confirm message throughout the network in the manner described by Lynch~\cite{Lynch:1996}. When a node receives the confirm message, it becomes a confirmed member of the spanning tree rooted at the source of the SynchBFS instance that terminated. 
 
 The message dissemination subroutine begins when a node $u$ receives a message $m$ from $E_u$ using the \textit{send} command. While a node can receive a \textit{send} command from its environment at any point during execution, it won't begin the message dissemination subroutine until it has become a confirmed member of the tree. First, node $u$ sends the message $m$ to the leader of the network by broadcasting $m$ with the instructions that only its parent should forward $m$. Each node that forwards $m$ keeps track of from which child node it received $m$. Message $m$ continues to be passed up the tree from child to parent until it reaches the leader of the tree. Message $m$ is guaranteed to reach the leader because the leader is an ancestor of every node in the tree. When the leader receives a message, it adds that message to its send queue.
 
-If a message is not being disseminated through the tree, the leader will dequeue the next message $m$, if any exists, off its send queue. Next, the leader will notify its environment of message $m$ using the \textit{receive} command and then broadcast $m$. All of the children of the leader will receive $m$ and perform the same two actions as the leader, notifying their respective environments and broadcasting $m$, and in this way, $m$ will eventually reach every node, which will pass $m$ to its environment only once because a node will only process $m$ when it is sent by its parent and a node can only have one parent in the tree. A node that receives $m$ and doesn't have any children will send a message to their parent confirming that they have received message $m$. When a node has received confirmation messages from all of its children, it will send a message to its parent confirming that it (and all its children) have received $m$. When the leader has received confirmation messages from all of its children, the leader will dequeue the next message $m'$, if any exists, off its send queue and repeat the message dissemination subroutine. 
+If a message is not being disseminated through the tree, the leader will dequeue the next message $m$, if any exists, off its send queue. Next, the leader will notify its environment of message $m$ using the \textit{receive} command and then broadcast $m$. All of the children of the leader will receive $m$ and perform the same two actions as the leader, notifying their respective environments and broadcasting $m$, and in this way, $m$ will eventually reach every node, which will pass $m$ to its environment only once because a node will only process $m$ when it is sent by its parent and a node can only have one parent in the tree. A node that receives $m$ and doesn't have any children will send a finished message to their parent confirming that they have received message $m$. When a node has received finished messages from all of its children, it will send a finished message to its parent confirming that it (and all its children) have received $m$. When the leader has received finished messages from all of its children, the leader will dequeue the next message $m'$, if any exists, off its send queue and repeat the message dissemination subroutine. 
 
 At the same time, the leader will send a message to $u$ telling it that all nodes in the network have received $m$. This message to $u$ follows the same path as the original message from $u$ to the leader as each node broadcasts it with the instruction that it only should be forwarded by the specified node, the child that sent it to the parent. When $u$ receives this message, it notifies its environment using its \textit{acknowledge} command.
 
 
-  \subsection {Reliable Broadcast with Staggered Activation}
+  \subsection {Staggered Activation Reliable Broadcast Algorithm}
 
-The algorithm for reliable broadcast with simultaneous activation works for reliable broadcast with staggered activation with the following modifications.
+The simultaneous activation reliable broadcast algorithm works for reliable broadcast under the assumption of staggered activation with the following modifications.
 
 In the leader election subroutine, the source of a SynchBFS instance started by node $u$ is now identified by the combination of the global round when $u$ activated and the ID of $u$. A node will stop running instances when they see smaller ids; A node will stop running a SynchBFS instance if it hears about a SynchBFS instance with a lowest global round of activation or a SynchBFS instance with the same global round of activation and a smaller ID. By the definition of the model, nodes have unique IDs so multiples BFS instances won't have the same ID.
 
 When a node is a confirmed member of the spanning tree, it broadcasts a message at the beginning of every round declaring that it is part of the spanning tree and telling its neighbors to join. Once the leader has been elected and sent a confirm message through the tree, it is still possible for nodes to activate. When a node $u$ activates, it follows the leader election subroutine. If at any point during running the leader election subroutine $u$ receives a confirm message, it will stop running its instance of SynchBFS, join the spanning tree rooted at the leader and begin the message dissemination protocol.
 
 
-  \subsection {Reliable Broadcast with Activations and Deactivations}
+  \subsection {Variable Activation and Deactivation Reliable Broadcast Algorithm}
 
-The algorithm for reliable broadcast with activations and deactivations is very different from the algorithms for reliable broadcast with only activations. The deactivation case does not involve running SynchBFS to elect a leader or rely on a stable tree. Instead, it relies on flooding messages through the network.
+The variable activation and deactivation reliable broadcast algorithm is very different from the algorithms for reliable broadcast under the assumption of only activations. This algorithm does not involve running SynchBFS to elect a leader or rely on a stable tree. Instead, it relies on flooding messages through the network.
 
 In more detail, when a node $u$ receives a message $m$ from its environment at round $r$ using the \textit{send} command, $u$ disseminates $m$ through the network, with the instructions that every node that receives $m$ should execute the \textit{receive} command on $m$ at a specified round $r'$. The round of execution $r'$ is equal to round $r$ + $n$ where $n$ is an upper bound on the number of nodes in the network. The node $u$ will execute the \textit{acknowledge} command on $m$ at round $r' + 1$.
 
@@ -134,13 +134,13 @@ If a node has multiple \textit{receive} commands to execute in the same round, i
 
 In this section, we prove the correctness of the three algorithms presented in this paper. The analysis sections for the first two algorithms begin with a proof of the leader election subroutine in their respectives settings as correct leader election is integral to the reliable broadcast protocols.
 
-\subsection {Reliable Broadcast with Simultaneous Activation}
+\subsection {Simultaneous Activation Reliable Broadcast Algorithm}
 
-In this section, we prove the correctness of the algorithm assuming simultaneous activation of all nodes. First, we prove the correctness of the leader election subroutine and then we prove the correctness of the message dissemination subroutine.
+In this section, we prove the correctness of the algorithm assuming simultaneous activation of nodes. First, we prove the correctness of the leader election subroutine and then leverage this knowledge to prove the correctness of the overall simultaneous activation reliable broadcast algorithm.
 
 \subsubsection{Leader Election Subroutine}
 
-We prove the correctness of leader election by separately proving liveness and safety of the subroutine.
+We prove the correctness of leader election by separately proving the liveness and safety property of the subroutine.
 
 \begin{theorem}
 \label{LeaderElectionStatic}
@@ -175,7 +175,7 @@ Every node in the network will eventually participate in $b_{u_{min}}$ because w
 \end{lemma}
 \begin{proof}
 Termination of a SynchBFS instance $b_j$ requires all other processes in the network to send a ``done'' message to $b_j$. A process sends done to $b_j$ by broadcasting a ``done'' message that is received by its parent in $b_j$. A process will only broadcast a ``done'' message when it knows that all of its neighbors are participating in $b_j$.
-Given BFS instance $b_j$ where $j$ \textgreater $u_{min}$, there is at least one process, the process with ID $u_{min}$, that will never participate in $b_j$.
+Given BFS instance $b_j$ where $j$ \textgreater $ $ $u_{min}$, there is at least one process, the process with ID $u_{min}$, that will never participate in $b_j$.
 Therefore, $b_j$ will never terminate.
 \end{proof}
 
@@ -218,11 +218,11 @@ For a message $m$ to be disseminated by the leader, it means the leader must bro
 
 \begin{lemma}
 \label{StaticConfirmationMessage}
-Under the assumption of simultaneous activation, for any message $m$ disseminated by the leader, the leader will eventually receive a confirmation message that all the nodes in the network have seen message $m$.
+Under the assumption of simultaneous activation, for any message $m$ disseminated by the leader, the leader will eventually receive a finished message that all the nodes in the network have seen message $m$.
 \end{lemma}
 \begin{proof}
 
-According to the subroutine, a leaf node will send a confirm message to its parent upon receiving $m$. Every child of a non-leaf node eventually sends a confirm message because the subtree of every node ends with all leaf nodes. As a result, every non-leaf node, including the leader, will eventually receive a confirm message from its children.
+According to the subroutine, a leaf node will send a finished message to its parent upon receiving $m$. Every child of a non-leaf node eventually sends a finished message because the subtree of every node ends with all leaf nodes. As a result, every non-leaf node, including the leader, will eventually receive a finished message from its children.
 
 \end{proof}
 
@@ -286,49 +286,51 @@ The only way in which $u$ will receive a message $m$ to pass to its environment 
 \end{proof}
 
 
+\subsection {Staggered Activation Reliable Broadcast Algorithm}
 
-\subsection {Reliable Broadcast with Staggered Activation}
-
-In this section, we prove the correctness of the algorithm assuming staggered activation of nodes. First, we prove the correctness of the leader election subroutine and then we prove the correctness of the message dissemination subroutine.
+In this section, we prove the correctness of the algorithm assuming staggered activation of nodes. First, we prove the correctness of the leader election subroutine and then leverage this knowledge to prove the correctness of the overall staggered activation reliable broadcast algorithm.
 
 \subsubsection{Leader Election Subroutine}
 
+We prove the correctness of leader election by separately proving the liveness and safety property of the subroutine.
+
 \begin{theorem}
 \label{LeaderElectionStaggered}
-
-A node will eventually elect itself leader and no more than one node will have leader equal to true at the beginning of any round. 
+The staggered activation reliable broadcast algorithm will eventually elect a single node to be leader as indicated by the leader node setting its leader variable to true.
 \end{theorem}
 \begin{proof}
-One node will eventually elect itself leader (Lemma~\ref{LELivenessStaggered}).
-No more than one node will have leader set to true at any point (Lemma~\ref{LESafetyStaggered}).
+To prove that a single node elects itself leader, it is sufficient to prove both the liveness and safety property of the given leader election subroutine. Liveness guarantees that at least one node will eventually elect itself leader (Lemma~\ref{LELivenessStaggered}) while safety guarantees that no more than one node will have its leader variable set to true at any point (Lemma~\ref{LESafetyStaggered}).
+
 \end{proof}
 
-\begin{definition}
-Let $u_{min}$ be the ID of the process with the minimum global round of activation and the minimum UID  of the nodes that at that round in the network. 
-\end{definition}
+We now define notation that will simplify the statment and proof of the lemmata that follow. We redefine $u_{min}$ but do not redefine $b_i$ and will use the definition of $b_i$ from the simultaneous activation reliable broadcast algorithm section.
+
+%\begin{definition}
+% Let a SynchBFS's source be the  rank be its global round of activation combined with it
+%\end{definition}
 
 \begin{definition}
-Let BFS instance $b_i$ refer to an instance of the terminating breadth-first search protocol initiated by process with ID i.
+Let $u_{min}$ be the ID of the process which has the minimum global round of activation in the network. If multiple processes have the minimum global round of activation, then $u_{min}$ will be the process with the minimum ID out of the processes with the minimum global round of activation.
 \end{definition}
 
 
 \begin{lemma}
 \label{LELivenessStaggered}
-  One node will eventually set its variable leader to true.
+ At least one node will eventually set its leader variable equal to true.
 \end{lemma}
 \begin{proof}
-A BFS instance $b_i$ will eventually terminate if every node in the network runs $b_i$. 
-Every node in the network will eventually run $b_{u_{min}}$ so $b_{u_{min}}$ will eventually terminate and the process with ID $u_{min}$ will set leader = true.
-\end{proof}
 
+A SynchBFS instance $b_i$ will eventually terminate if every node in the network participates in $b_i$. 
+Every node in the network will eventually participate in $b_{u_{min}}$ because when a node hears about $b_{u_{min}}$, it will stop participating in its current SynchBFS instance and start participarting in $b_{u_{min}}$ because it is the SynchBFS instance whose source has the minimum combination of global round of activation and ID in the network. As a result, $b_{u_{min}}$ will eventually terminate and the process with ID $u_{min}$ will set leader = true.
+\end{proof}
 
 \begin{lemma}
 \label{BFSTerminationStaggered}
   A BFS instance $b_i$ will only terminate if $i$ equals $u_{min}$.
 \end{lemma}
 \begin{proof}
-Termination of a BFS instance $b_j$ requires all other processes in the network to send a done message to $b_j$.
-Given BFS instance $b_j$ where $j$ \textgreater $u_{min}$, there is at least one process, the process with ID $u_{min}$, that will never reply done to $b_j$. The process with ID $u_{min}$ will have been activate before or at the same round as every process in the network, including the process with ID $j$, so $j$ will require the process with ID $u_{min}$ to reply done, which it never will.
+Termination of a BFS instance $b_j$ requires all other processes in the network to send a done message to $b_j$. A process sends done to $b_j$ by broadcasting a ``done'' message that is received by its parent in $b_j$. A process will only broadcast a ``done'' message when it knows that all of its neighbors are participating in $b_j$.
+Given BFS instance $b_j$ where $j$ \textgreater $ $ $u_{min}$, there is at least one process, the process with ID $u_{min}$, that will never reply done to $b_j$. The process with ID $u_{min}$ will have been activate before or at the same round as every process in the network, including the process with ID $j$, so $j$ will require the process with ID $u_{min}$ to reply done, which it never will.
 Therefore, $b_j$ will never terminate.
 \end{proof}
 
@@ -344,38 +346,43 @@ Only the process with ID $u_{min}$ will set leader = true.
 \end{proof}
 
 
-\subsubsection{Message Dissemination Subroutine}
+\subsubsection{Overall Correctness}
+
+Drawing on the proof of correctness of the leader election subroutine, we prove the staggered activation reliable broadcast algorithm satisfies the four properties of reliable broadcast and therefore correctly implements the reliable broadcast service.
 
 \begin{theorem}
 \label{StaggeredReliableBroadcast}
-  The algorithm solves the reliable broadcast problem with staggered activation.
+The staggered activation reliable broadcast algorithm correctly implements the reliable broadcast service.
 \end{theorem}
 \begin{proof}
-This algorithm satisfies the liveness property (Lemma~\ref{StaggeredRBLiveness}), 
+This staggered activation reliable broadcast algorithm satisfies the liveness property (Lemma~\ref{StaggeredRBLiveness}), 
 the first safety property (Lemma~\ref{StaggeredRBSafety1}),
 the second safety property (Lemma~\ref{StaggeredRBSafety2}) and 
-the third safety property (Lemma~\ref{StaggeredRBSafety3}) of the reliable broadcast problem with staggered activation.
+the third safety property (Lemma~\ref{StaggeredRBSafety3}) of the reliable broadcast problem under the assumption of staggered activation.
 \end{proof}
 
 \begin{lemma}
 \label{StaggeredStablePath}
-The path from the leader of a tree to any node in the tree will not change with the activation of any node.
+The path from the leader of a tree to any confirmed node in the tree will not change with the activation of any node.
 \end{lemma}
 \begin{proof}
-Every node is connected to the leader through their parent and nodes do not change their parent after they are a confirmed member of the spanning tree.
+When a node is a confirmed member of the tree, it is part of the spanning tree rooted at the leader. There exists a stable path from every node $u$ that is a confirmed member of the tree to the leader because the leader is an ancestor of every node in the network. This path goes from a node to its parent. If its parent is not the leader, then it goes to its parent. Eventually, this path reaches the leader as the tree is rooted at the leader. This path is stable because nodes do not change their parent after becoming a confirmed member of the tree and nodes do not deactivate under the assumptions of staggered activation.
 \end{proof}
 
 \begin{lemma}
 \label{StaggeredSpanningTreePropagation}
-A given node $u$ that receives a message $m$ at round $r$ will eventually send a confirmation message to its parent. 
+A given node $u$ that receives a message $m$ at round $r$ will eventually send a finished message to its parent. 
 \end{lemma}
 \begin{proof}
 
- If $u$ is a leaf node at round $r+2$, $u$ will immediately send a confirmation message so any nodes joining the tree as children of $u$ won't affect the propagation of the confirm message up the tree. 
+Assume node $u$ receives a message $m$ from its parent at round $r$. By definition of the algorithm, a node that receives a message $m$ at round $r$ will execute the message at round $r+2$. Also according to the algorithm, a node that has no children when it executes the message will immediately send a finished message to its parent. If node $u$ is a leaf node at round $r+2$, $u$ will immediately send a finished message to its parent.
 
-If $u$ is a non-leaf node at round $r+2$, $u$ will broadcast $m$. All active nodes that consider $u$ to be their parent before $r+2$, will process $m$. If a node $v$ considers $u$ to be its parent at round $r+2$, $u$ will consider $v$ to be its child no later than round $r+3$. According to the algorithm, $u$ will only wait to hear confirm messages from nodes that it considers to be its children at the end of round $r+3$ so $u$ will only wait to hear from nodes that processed $m$ and are guaranteed to eventually send a confirm message to $u$. 
+If $u$ is not a leaf node at round $r+2$, $u$ will broadcast $m$ at $r+2$, which will be processed by all of its children. All active nodes that consider $u$ to be their parent before $r+2$, will process $m$. At round $r+4$, the children of $u$ will execute the message in the same way as node $u$. If they are leaf nodes, they will send a finished message $u$. Otherwise, they will broadcast $m$ to their children. In this way, the message $m$ will travel through the tree until it reaches a leaf node. These leaf nodes will respond finished to their parents. When a non-leaf node receives finished messages from all of its children, it sends a finished message to its parent. In this way, finished messages will propagate back up the tree until $u$ receives finished messages from all of its children. When this happens, $u$ will send a finished message to its parent
 
-As a result, $u$ is guaranteed to send a confirm message to its parent. 
+
+% If a node $v$ considers $u$ to be its parent at round $r+2$, $u$ will consider $v$ to be its child no later than round $r+3$. According to the algorithm, $u$ will only wait to hear confirm messages from nodes that it considers to be its children at the end of round $r+3$ so $u$ will only wait to hear from nodes that processed $m$ and are guaranteed to eventually send a confirm message to $u$. 
+
+% As a result, $u$ is guaranteed to send a confirm message to its parent. 
 
 \end{proof}
 
@@ -385,23 +392,28 @@ The algorithm satisfies the liveness property of the reliable broadcast problem 
 \end{lemma}
 \begin{proof}
 
-Assume node $u$ running algorithm $\cal A$ is passed a message $m$ by $E_u$ through its \textit{send} command. When $u$ is a confirmed member of the spanning tree, it sends $m$ to the leader of the tree. There will be a stable path between $u$ and the leader so $m$ is guaranteed to reach the leader (Lemma~\ref{StaggeredStablePath}). When $m$ reaches the leader, it is placed in its send queue. Eventually, $m$ reaches the front of the send queue and is dequeued by the leader. The leader broadcasts $m$ to the network and eventually receives a confirm message that all the nodes in the network have seen $m$ (Lemma~\ref{StaggeredSpanningTreePropagation}). When the leader has received confirmation messages from all of its children, it will notify $u$ using the same stable path. When $u$ receives this message from the leader, it sends  a ``done'' signal to $E_u$ using the \textit{acknowledge} command.
+Assume node $u$ running algorithm $\cal A$ is passed a message $m$ by $E_u$ through its \textit{send} command. If $u$ is not a confirmed member of the spanning tree rooted at the leader, it will become a confirmed member soon after the leader election subroutine terminates (Lemma~\ref{LeaderElectionStaggered}). When $u$ is a confirmed member of the spanning tree rooted at the leader, it sends $m$ to the leader of the tree. There is a stable path between the leader and any confirmed node so $m$ is guaranteed to reach the leader (Lemma~\ref{StaggeredStablePath}). When $m$ reaches the leader, it is placed in its send queue. The message in the front of the leader's send queue will be dequeued if the network is not already in the process of disseminating another message. A message that is disseminated through the network is guaranteed to terminate as all of the leader's children will eventually send the leader a finished message (Lemma~\ref{StaggeredSpanningTreePropagation}). Given that all of the messages in front of $m$ in the queue will eventually be disseminated and terminate, $m$ is guaranteed to reach the front of the queue, be disseminated and terminate. When message $m$ terminates, the leader will notify $u$ using an ``acknowledge'' message along the stable path between the leader and $u$ (Lemma~\ref{StaggeredStablePath}). When $u$ receives this message from the leader, it sends  a ``done'' signal to $E_u$ using the \textit{acknowledge} command thus satisfying the liveness property of reliable broadcast.
+
 
 \end{proof}
 
 \begin{lemma}
 \label{RBSafety1ByInduction}
-  By induction, any node $u$ that activates before round $r$ and is $q$ hops from the tree will receive a message $m$ that is sent to any given node from an environment during round $r$.
+  Assume node $u$ activates before round $r$ and is $q$ hops from the closest node that is a confirmed member of the spanning tree rooted at the leader. Node $u$ will receive any message $m$ that is sent to a given node $v$ from an environment during or after round $r$.
 \end{lemma}
-\begin{proof} By Induction. \\
+\begin{proof} This proof implicitly assumes that a leader has been elected by round $r$. If a leader has not been elected, there can be no confirmed members of the spanning tree rooted at the leader. This assumption does not invalidate the proof. No node will start the reliable broadcast for a message received from the environment until they are a confirmed member of the spanning tree rooted at the leader, which requires the election of a leader. For the purpose of the proof, we can allow $r$ to be the round at which $v$ begins the reliable broadcast service for $m$ because the round at which $v$ begins the reliable broadcast service for $m$ will be greater than or equal to the round at which $v$ receives $m$ from its environment. In short, this assumption reduces the amount of time that $u$ has to become a confirmed member of the spanning tree, making this proof stronger not weaker.
+
+
+We prove the lemma statement by induction on $q$, the number of hops from $u$ to the closest confirmed member of thespanning tree rooted at the leader.
+
+
+\noindent Inductive Hypothesis: The theorem holds for all values of $q$ up to $k$
 
 \noindent Base Case $q=0$: A node $u$ that is zero hops away from the tree is part of the tree and will receive the message $m$ (Lemma~\ref{StaticRBSafety1}).
 
-\noindent Inductive Hypothesis: Suppose the theorem holds for all values of $q$ up to $k$
+\noindent Inductive Step: Assuming the theorem holds for all values of $q$ up to $k$, let $q$ = $k+1$
 
-\noindent Inductive Step: Let $q=k+1$.
-
-$v$, the node that is $k$ hops from the tree at round $r$, receives $m$ at a later round $r'$. For $v$ to have received $m$ in round $r'$, it must have been a confirmed member of the tree in round $r'$. As a confirmed member of the tree, $v$ must have broadcast a message telling its neighbors to join the tree. $u$, which is a neighbor of $v$, receives this message in round $r'$ and is a confirmed member of the tree by round $r'+1$. As the parent of $u$, $v$ will broadcast $m$ to $u$ in round $r'+3$ after the two round wait period.
+If node $u$ is $k+1$ hops from the nearest confirmed member of the spanning tree rooted at the leader, there must exist a node $v$, which is a neighbor of $u$ and is $k$ hopes from the nearest confirmed member. By the inductive hypothesis, $v$ receives $m$ at a later round $r'$. By the algorithm, only confirmed nodes will process reliable broadcast messages. Consequently, node $v$ is a confirmed member of the tree by round $r'$. All confirmed members of the tree broadcast a message telling its neighbors to join the spanning tree rooted at the leader and become confirmed. Node $v$ therefore broadcast a confirm to its neighbors, including $u$, to join the tree during round $r'$. All neighbors of $v$, including $u$, are confirmed members of the tree by round $r'$. By the definition of the algorithm, node $v$ will broadcast message $m$ two rounds after it received $m$. When $v$ broadcasts message $m$ in round $r+2$, this message will be received by $u$.
 
 \end{proof}
 
@@ -414,31 +426,32 @@ $v$, the node that is $k$ hops from the tree at round $r$, receives $m$ at a lat
 Assume node $u$ is passed a message $m$ by $E_u$ at round $r$ and $u$ sends  a ``done'' signal in some later round $r'$.
 In the staggered activation case, $A(r,r')$ is identical to $A(r)$ which is the set of all nodes that have activated by round $r$. If all the nodes in $A(r,r')$ are part of the spanning tree of by round $r$, this is identical to the first safety property in the case of simultaneous activation (Lemma~\ref{StaticRBSafety1}) given that the activation of any nodes won't affect the path between a node and the leader (Lemma~\ref{StaggeredStablePath}) and any node that receives a message will eventually send a confirmation message to its parent (Lemma~\ref{StaggeredSpanningTreePropagation}). 
 
-If all the nodes in $A(r,r')$ are not part of the spanning tree of by round $r$, the nodes that aren't part of the tree before round $r$ will become part of the tree in time to receive the message (Lemma~\ref{RBSafety1ByInduction}) and any node that receives a message will eventually send a confirmation message to its parent (Lemma~\ref{StaggeredStablePath}).
+If all the nodes in $A(r,r')$ are not part of the spanning tree of by round $r$, the nodes that are not part of the tree before round $r$ will become part of the tree in time to receive the message (Lemma~\ref{RBSafety1ByInduction}) and any node that receives a message will eventually send a confirmation message to its parent (Lemma~\ref{StaggeredStablePath}).
 
 \end{proof}
 
 
 \begin{lemma}
 \label{StaggeredRBSafety2}
-The algorithm satisfies the second safety property of the reliable broadcast problem with staggered activation.
+The staggered activation reliable broadcast algorithm satisfies the second safety property of the reliable broadcast service under the assumption of staggered activation.
 \end{lemma}
 \begin{proof}
-Safety Property \#2: Assume some node $u$ passes a message $m$ to its environment through its \textit{receive} command in some round $r$ and then passes a different message $m'$ in a later round $r'$. It follows that no node in the network passed message $m'$ to its environment before message $m$. 
 
 Assume some node $u$ passes a message $m$ to its environment through its \textit{receive} command in some round $r$ and then passes a different message $m'$ in a later round $r'$. 
 
-The leader of the tree only broadcasts one message at a time as after sending a message, it waits to receive a confirmation message before sending the next message in its send queue. If $u$ passes $m$ to its environment before passing $m'$ then the leader must have broadcast $m$ before it broadcast $m'$. As a result, any node that received $m$ and $m'$ must have received $m$ before $m'$.
+If $u$ passes $m$ to its environment, $m$ must have been disseminated by the leader. If the leader disseminates $m$, every node in $A(r,r')$ will receive $m$ and notify its environment and eventually the leader will receive a confirm message (Lemma~\ref{StaggeredRBSafety1}) (Lemma~\ref{StaggeredSpanningTreePropagation}). If $u$ receives $m'$ after $m$, then the leader must have broadcast $m'$ after $m$ because the leader will not begin to broadcast another message, like $m'$, until it has received a confirm message that all of the nodes in the network, including $u$, have seen $m$. As a result, no node in the network will pass $m'$ to its environment before $m$.
 
 \end{proof}
 
 \begin{lemma}
 \label{StaggeredRBSafety3}
-The algorithm satisfies the third safety property of the reliable broadcast problem with staggered activation.
+The staggered activation reliable broadcast algorithm satisfies the third safety property of the reliable broadcast problem with staggered activation.
 \end{lemma}
 \begin{proof}
 
-Per the algorithm, nodes only pass a message $m$ to their environment when they receive $m$ from their parent in the tree. A given node has only one parent and so only receives $m$ once.
+The third safety property of reliable broadcast service with staggered activation requires that if a node $u$ passes a message $m$ to its environment, it has not passed $m$ to its environment before and some node in the network previously received $m$ from its environment. It follows from the definition of  the algorithm that any node $u$ that is not the leader of the tree will pass a message $m$ to its environment only if and when it receives $m$ from its parent in the tree. A node will also only pass a message to its environment if it is a confirmed member of the tree. If a node is a confirmed member of the tree, it has only one parent, which does not change during the execution. As a result, $u$ will only process and pass $m$ to its environment once. If node $u$ is the leader of the tree, it will only pass $m$ to its environment when it dequeues $m$ from its queue, which will only happen once for each message. Therefore, a node $u$ will only pass a message $m$ to its environment at most one time.
+
+The only way in which $u$ will receive a message $m$ to pass to its environment is if $m$ is disseminated to the network by the leader. The leader will only disseminate a message $m$ if $m$ is sent to it by its own environment or by a node that received $m$ from its environment. Therefore, a node $u$ will only pass a message $m$ to its environment if $m$ has been received by a node in the network from its environment.
 
 \end{proof}
 
