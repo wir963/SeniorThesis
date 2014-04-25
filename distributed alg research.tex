@@ -544,5 +544,23 @@ By the definition of the algorithm, the only way for a node will only add a mess
 
 \end{proof}
 
+
+
+\section{Results}
+
+In this section, we outline the architecture and methodology of our stimulation and provide the results. 
+
+\subsection{Architecture}
+
+The simulator is built in Python using SimPy, a discrete-event simulator. The system is divided into three modules. The Overlord class handles all the inter-node communication and the activations and deactivations of nodes. This design decision ensures that no information about a node's neighbors or rounds of activation or deactivation are stored in the node itself. Moreover, this class can be reused to handle the inter-node communication and activation and deactivation of nodes for any other algorithm that runs in the synchronous broadcast model. It contains no code that is specific to any of our algorithms. 
+
+The Overlord also keeps track of global rounds and tells every node when to begin each round. If a node is not active for a round $r$, the Overlord class never tells it to begin round $r$. Every node sends its messages for that round to the Overlord class, which sends a copy to each of its active neighbors. Each instance of the Node class also has a connection to its own instance of the RBEnvironment class.
+
+The RBEnvironment class is our simulation of the environment from our reliable broadcast service. It has three tasks to perform: it can send a messages to its node using the receive command, it can receive a message from its node and it can receive an acknowledgement about a previous from its node. In our simulation, each instance of the RBEnvironment class waited a random amount of time from a defined range of values before passing a message to its node. 
+
+
+
+\subsection{Analysis of Results}
+
 \end{document}
 
