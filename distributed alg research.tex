@@ -32,7 +32,7 @@ Science\par\end{center}
 \newcommand{\mydef}[1]{\begin{definition}#1\end{definition}}
 
 \begin{abstract}
-Abstract
+The importance of distributed computing has grown in recent years with the creation and accumulation of massive amounts of data, the prevalence of mobile devices and the development of peer-to-peer networks. The vast majority of the existing distributed theory literature has focused on static distributed networks, which assume a relatively constant network topology and participant set. While reasonable for relatively stable settings such as data centers, the assumptions of this approach will not hold for wireless networks, which feature dynamic sets of participants and variable topologies because the nodes are extremely mobile and the links unstable. Unlocking the potential of distributed computing in wireless networks requires the implementation of primitives used by static distributed algorithms in this more dynamic distributed network setting. To this end, this thesis describes and proves correct three novel algorithms that implement a reliable broadcast service in dynamic distributed networks with varying assumptions for node behavior. The first two proposed algorithms assume nodes will not deactivate during execution and consequently demonstrate strong performance and efficiency. The third algorithm allows nodes to activate and deactivate during execution although this comes at a slight cost to performance. Finally, to demonstrate the practicality of these algorithms in realistic networks, this thesis also presents simulation results on both synthetic and real world data sets of varying size and topology.
 \end{abstract}
 
 
@@ -53,6 +53,15 @@ This thesis describes and proves correct three new implementations of the reliab
 The first implementation we provide of the reliable broadcast service assumes that all nodes in the network activate before the same global round and remain active for the duration of the execution (Simultaneous Activation). The second implementation allows nodes to activate before different rounds of execution but assumes that after a node activates, it remains active for the remainder of the execution (Staggered Activation).  The third implementation assumes nodes can activate or deactivate before each and every round (Variable Activation and Deactivation). While the first two sets of assumptions do not allow for significant changes to the network topology and participant set during execution, they demonstrate the best-case efficiency and performance in a reasonably well-behaved \em dynamic distributed networks\em. While the third implementation correctly implements reliable broadcast for all three sets of assumptions about node behavior related to activations and deactivations, it has a significantly worse average case performance than both the first and second implementation. 
 
 The major contributions of this thesis are as follows. First, it provides a correct and useful definition for the problem of reliable broadcast in \em dynamic distributed networks \em. Second, it describes and proves correct new implementations for reliable broadcast in \em dynamic distributed networks\em given the different sets of assumptions regarding node activation and deactivation during execution. Third, these algorithms use general strategies that will be useful for the development of other algorithms for \em dynamic distributed networks\em. Finally, this thesis provides simulation results for the algorithms in both synthetic and real world networks to explore average case performance beyond the formally proven worst-case bounds.
+
+\section{Related Work}
+
+Extensive theoretical work already exists for static distributed networks \cite{Schneider:1990}.
+
+Kuhn~et~al use the model of dynamic distributed networks that most closely matches our own model \cite{Kuhn:2008}. However, in contrast to our model, which permits a dynamic participant set, their model assumes a stable set of participants. Their paper studies token passing and message dissemination, the latter of which we leverage in this thesis. 
+
+Other papers that examine dynamic distributed networks create a reliable virtual layer on top of the variable topology of the underlying dynamic distributed network \cite{Brown:2007, Chockler:2008, Gao:2012}. Two shortcomings of this approach are the requirements that nodes have knowledge of their absolute location and remain within a physical area that is determined prior to execution.
+
 
 \section{Model}
 
