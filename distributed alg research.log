@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  24 APR 2014 21:56
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  28 APR 2014 11:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -334,60 +334,47 @@ LaTeX Warning: Citation `Schneider:1990' on page 3 undefined on input line 59.
 
 LaTeX Warning: Citation `Kuhn:2008' on page 3 undefined on input line 61.
 
-
-LaTeX Warning: Citation `Brown:2007' on page 3 undefined on input line 63.
-
-
-LaTeX Warning: Citation `Chockler:2008' on page 3 undefined on input line 63.
-
-
-LaTeX Warning: Citation `Gao:2012' on page 3 undefined on input line 63.
-
 [3]
 
-LaTeX Warning: Citation `Lynch:1996' on page 4 undefined on input line 69.
+LaTeX Warning: Citation `Brown:2007' on page 4 undefined on input line 63.
 
 
-LaTeX Warning: Citation `Kuhn:2010' on page 4 undefined on input line 69.
+LaTeX Warning: Citation `Chockler:2008' on page 4 undefined on input line 63.
+
+
+LaTeX Warning: Citation `Gao:2012' on page 4 undefined on input line 63.
+
+
+LaTeX Warning: Citation `Lynch:1996' on page 4 undefined on input line 75.
+
+
+LaTeX Warning: Citation `Kuhn:2010' on page 4 undefined on input line 75.
 
 [4] [5]
-Overfull \hbox (4.56454pt too wide) in paragraph at lines 113--113
+Overfull \hbox (4.56454pt too wide) in paragraph at lines 119--119
 []\T1/cmr/bx/n/12 Simultaneous Ac-ti-va-tion Re-li-able Broad-cast Al-go-rithm 
 
  []
 
 
-LaTeX Warning: Citation `Lynch:1996' on page 6 undefined on input line 115.
+LaTeX Warning: Citation `Lynch:1996' on page 6 undefined on input line 121.
 
-
-LaTeX Warning: Citation `Lynch:1996' on page 6 undefined on input line 115.
-
-[6] [7]
-Overfull \hbox (4.56454pt too wide) in paragraph at lines 146--146
+[6] [7] [8]
+Overfull \hbox (4.56454pt too wide) in paragraph at lines 156--156
 []\T1/cmr/bx/n/12 Simultaneous Ac-ti-va-tion Re-li-able Broad-cast Al-go-rithm 
 
  []
 
-[8] [9] [10] [11] [12] [13] [14] [15] [16]
-Overfull \hbox (8.44147pt too wide) in paragraph at lines 478--482
-\T1/cmr/m/n/10 sat-is-fies the live-ness prop-erty(Lemma 6.26[]), the first saf
-ety prop-erty(Lemma 6.28[]),
+[9] [10] [11] [12] [13] [14] [15] [16] [17]
+Overfull \hbox (38.85071pt too wide) in paragraph at lines 478--482
+\T1/cmr/m/n/10 and de-ac-ti-va-tion re-li-able broad-cast al-go-rithm sat-is-fi
+es the live-ness prop-erty(Lemma 6.26[]),
  []
 
 
-Overfull \hbox (13.27362pt too wide) in paragraph at lines 478--482
-\T1/cmr/m/n/10 the sec-ond safety prop-erty(Lemma 6.29[]) and the third safety 
-prop-erty(Lemma 6.30[])
- []
+LaTeX Warning: Citation `Kuhn:2010' on page 18 undefined on input line 498.
 
-[17]
-
-LaTeX Warning: Citation `Kuhn:2010' on page 18 undefined on input line 499.
-
-
-LaTeX Warning: Citation `Kuhn:2010' on page 18 undefined on input line 501.
-
-[18] [19] [20] (./distributed alg research.aux)
+[18] [19] [20] [21] (./distributed alg research.aux)
 
 LaTeX Warning: There were undefined references.
 
@@ -395,11 +382,11 @@ LaTeX Warning: There were undefined references.
 Here is how much of TeX's memory you used:
  4661 strings out of 493315
  61807 string characters out of 6137904
- 151237 words of memory out of 5000000
+ 151241 words of memory out of 5000000
  8037 multiletter control sequences out of 15000+600000
  17601 words of font info for 50 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 38i,6n,26p,1600b,224s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,6n,26p,1597b,199s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2013/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
 </usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
 /usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></u
@@ -416,10 +403,10 @@ e/2013/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/
 13/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2013
 /texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/local/texlive/2013/t
 exmf-dist/fonts/type1/public/cm-super/sfti1000.pfb>
-Output written on "distributed alg research.pdf" (20 pages, 279604 bytes).
+Output written on "distributed alg research.pdf" (21 pages, 285392 bytes).
 PDF statistics:
- 130 PDF objects out of 1000 (max. 8388607)
- 92 compressed objects within 1 object stream
+ 133 PDF objects out of 1000 (max. 8388607)
+ 94 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
