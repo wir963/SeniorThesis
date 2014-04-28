@@ -491,15 +491,17 @@ Assume node $u$ running algorithm $\cal A$ is passed a message $m$ by $E_u$ thro
 
 \begin{lemma}
 \label{RBDeactivationReceive}
-Assume node $u$ running algorithm $\cal A$ is passed a message $m$ by $E_u$ through its \textit{send} command at round $r$. For a later round $r' = r + n + 1$, every node in $A(r,r')$ will receive message $m$ by round $r'-1$ and pass $m$ to its environment using its \textit{receive} command at round $r'$. 
+Assume node $u$ running algorithm $\cal A$ is passed a message $m$ by $E_u$ through its \textit{send} command at round $r$. For a later round $r' = r + n$, every node in $A(r,r')$ will receive message $m$ by the end of round $r'-1$.
 \end{lemma}
 \begin{proof}
 
 By the model definition, the network graph of active nodes is connected every round. A dynamic graph that is guaranteed to be connected in every round satisfies the $1$-interval connectivity property defined by Kuhn et~al.~\cite{Kuhn:2010}.
 
-Kuhn et~al. prove that token dissemination can be solved using flooding in $n$ rounds where $n$ is an upper bound on the number of nodes in the networks in 1-interval connected graphs with a static participant set. With regards to the dissemination of token $t$, it is possible to break the graph into two subgraphs, the nodes that have received $t$ and the nodes that have not received $t$. As long as there are nodes that have not received $t$, the subgraph of nodes that have received $t$ grows by at least one node per round. The graph of the network is connected so at least one node, $v$, from the subgraph of nodes that have received $t$ will have at least one neighbor, $v'$, from the subgraph of nodes that have not received $t$. At the beginning of the next round, node $v$ will broadcast token $t$ to node $v'$.
+Kuhn et~al. prove that token dissemination can be solved using flooding in $n$ rounds where $n$ is an upper bound on the number of nodes in the networks in 1-interval connected graphs with a static participant set. With regards to the dissemination of token $t$, it is possible to break the graph into two subgraphs, the nodes that have received $t$ and the nodes that have not received $t$. As long as there are nodes that have not received $t$, the subgraph of nodes that have received $t$ grows by at least one node per round. The graph of the network is connected so at least one node, $v$, from the subgraph of nodes that have received $t$ will have at least one neighbor, $v'$, from the subgraph of nodes that have not received $t$. At the beginning of the round, node $v$ will broadcast token $t$ to node $v'$.
 
-The core idea of token dissemination using flooding holds in our network even with activations and deactivations. Assume message $m$ is being disseminated through the network instead of token $t$. Instead of being guaranteed to reach every node in the network, the token is only guaranteed to reach every node in $A(r,r')$. With regards to the dissemination of message $m$, it is possible to break the graph into two subgraphs, the nodes that have received $m$ and the nodes that have not received $m$. Two possibilities exist for the change to the change to the subgraph after the execution of a round $r''$. If the subgraph does not grow by at least one node, there must be no nodes in the subgraph of nodes that haven't seen $m$. If this is the case, then all the nodes that are active for round $r''$, which is a superset of $A(r,r')$, have seen $m$ by $r''$. The other possibility is that the subgraph grows by at least one node. If the subgraph grows by at least one node for $n$ consecutive rounds then the subgraph will contain all $n$ nodes by the end of round $r'$ meaning that all nodes in the network have seen $m$.
+The core principle of token dissemination using flooding holds in our network with activations and deactivations. Assume message $m$ is being disseminated through the network instead of token $t$. With regards to the dissemination of message $m$, it is again possible to break the graph into two subgraphs, the nodes that have received $m$ and the nodes that have not received $m$. We define round $r''$ to be any round between round $r$ and round $r'-1$. In our model, nodes do not activate or deactivate during a round so the intra-round change for our network will be identical to that of the static network used by Kuhn et~al. 
+
+As a result, either the subgraph of nodes that have received $m$ increased by at least one node during round $r''$ or that all nodes active for round $r''$, $A(r'')$, had already seen $m$ at the beginning of round $r''$. $A(r'')$ is a superset of $A(r,r')$. If there exists a round $r''$ where $A(r'')$ has seen $m$ at the beginning of the $r''$ then the $A(r,r')$ has received message $m$. Otherwise, there are $n-1$ rounds during which the subgraph of nodes that have received $m$ grew by at least one node. By the end of these $n-1$ rounds, which corresponds to the end of $r'-1$, the subgraph of nodes that have received $m$ must be of minimum size $1 + (n-1)$ or $n$. Given that $n$ is the number of nodes, this means every node in the network, which is a superset of $A(r,r')$, receives message $m$ by the end of round $r'-1$.
 
 
 \end{proof}
@@ -511,7 +513,7 @@ The variable activation and deactivation reliable broadcast algorithm satisfies 
 \end{lemma}
 \begin{proof}
 
-For round $r$ and a later round $r' = r + n + 1$, every node in $A(r,r')$ will receive message $m$ broadcasted by node $u$ during round $r$ (Lemma~\ref{RBDeactivationReceive}). By definition of the algorithm, message $m$ will have an execution round of $r'-1$ if it is received by $u$ from its environment at round $r$. If a message $m'$ has an execution round of $r''$, any node that receives $m'$ and is active for round $r''$ will pass $m$ to its environment during round $r''$. Therefore, every node that receives $m$ and is active for round $r'-1$, which is a superset of $A(r,r')$ will pass message $m$ to its environment during round $r'-1$, which is between round $r$ and round $r'$.
+Assume node $u$ running algorithm $\cal A$ is passed a message $m$ by $E_u$ through its \textit{send} command at round $r$. For round $r'$ where $r' = r + n$, every node in $A(r,r')$ will receive message $m$ by the end of round $r'-1$ (Lemma~\ref{RBDeactivationReceive}). By definition of the algorithm, any node that has seen message $m$ and is active for round $r'-1$ will pass $m$ to its environment at $r'-1$. Therefore, every node in $A(r,r')$, which is a subset of the nodes that have seen $m$ and are active for $r'-1$ will pass message $m$ to their environment during round $r'-1$, which is between round $r$ and round $r'$.
 
 \end{proof}
 
@@ -522,11 +524,11 @@ The variable activation and deactivation reliable broadcast algorithm satisfies 
 \end{lemma}
 \begin{proof}
 
-By the definition of the algorithm, every node that receives a message $m$ will pass $m$ to its environment at a pre-determined round, called the execution round of message $m$. Assume two messages, $m$ and $m'$, are received by multiple nodes. Let round $r$ be the execution round of message $m$ and let round $r'$ be the execution round of message $m'$.
+By the definition of the algorithm, a message $m$ will contain a round $r_m$, which is the round that a node is expected to pass $m$ to its environment. Assume two messages, $m$ and $m'$, are received by multiple nodes.
 
-If $r$ is greater than $r'$, then all nodes that receive $m$ and $m'$ and are active for both $r$ and $r'$ will pass $m'$ to their environment before they pass $m$. If $r'$ is greater than $r$, then all nodes will that receive $m$ and $m'$ and are active for both $r$ and $r'$ will pass $m$ to their environment before they pass $m'$.
+If $m_r$ is greater than $m_{r'}$, then all nodes that receive $m$ and $m'$ and are active for both $m_r$ and $m_{r'}$ will pass $m'$ to their environment before they pass $m$. If $m_{r'}$ is greater than $m_r$, then all nodes will that receive $m$ and $m'$ and are active for both $m_r$ and $m_{r'}$ will pass $m$ to their environment before they pass $m'$.
 
-If $r$ is equal to $r'$, then nodes will use the UID attached to the message to determine the order of execution. If $m_{ID}$ is greater than $m'_{ID}$, then all nodes that receive $m$ and $m'$ and are active for both $r$ and $r'$ executes $m$ before $m'$. If $m'_{sourceID}$ is greater than $m_{sourceID}$, then all nodes that receive $m$ and $m'$ and are active for both $r$ and $r'$ executes $m'$ before $m$. $m'_{sourceID}$ cannot be equal to $m_{sourceID}$ because a single node cannot receive a message from its environment while it has an unacknowledged message out there.
+If $m_r$ is equal to $m_{r'}$, then nodes will use the ID of the node that received the message $m''$ from its environment, $m''_{ID}$, to determine the order of execution. If $m_{ID}$ is greater than $m'_{ID}$, then all nodes that receive $m$ and $m'$ and are active for both $m_r$ and $m_{r'}$ executes $m$ before $m'$. If $m'_{ID}$ is greater than $m_{ID}$, then all nodes that receive $m$ and $m'$ and are active for both $m_r$ and $m_{r'}$ executes $m'$ before $m$. $m'_{ID}$ cannot be equal to $m_{ID}$ because a node cannot receive a message from its environment while it is waiting to acknowledge a previous message.
 
 
 
@@ -539,10 +541,9 @@ The variable activation and deactivation reliable broadcast algorithm satisfies 
 \end{lemma}
 \begin{proof}
 
-The third safety property of reliable broadcast service assuming variable activation and deactivation requires that if a node $u$ passes a message $m$ to its environment, it has not passed $m$ to its environment before and some node in the network previously received $m$ from its environment. By definition of the algorithm, any node $u$ maintains a list of every unique message that it has received with a round of execution greater than or equal to round $r$ where $r$ is the current global round of execution. Since node $u$ only passes messages to its environment from its list, which will only have a single copy of each message, $u$ will only pass each message to its environment one time. 
+The third safety property of reliable broadcast service requires that if a node $u$ passes a message $m$ to its environment, it has not passed $m$ to its environment before and some node in the network previously received $m$ from its environment. By definition of the algorithm, any node $u$ maintains the set of messages that it has received with a round of execution greater than or equal to round $r$ where $r$ is the current global round of execution. Since node $u$ only passes messages to its environment from its list, which will only have a single copy of each message, $u$ will only pass each message to its environment one time. 
 
-By the definition of the algorithm, the only way for a node will only add a message $m$ to its list without receiving a message from a neighbor, is if it received $m$ from its environment.
-
+By the definition of the algorithm, a node will only add a message $m$ to its set that it did not receive from a neighbor if it receives $m$ from its environment. The only way for a message $m$ to begin being disseminated thorugh the network is if $m$ is passed to a node by its environment. 
 
 \end{proof}
 
