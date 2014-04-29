@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  28 APR 2014 16:44
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  28 APR 2014 20:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -224,23 +224,29 @@ File: babel.def 2013/05/16 v3.9f Babel common definitions
 \l@australian = a dialect from \language\l@british 
 \l@newzealand = a dialect from \language\l@british 
 ))
-(./distributed alg research.aux)
+(./distributed alg research.aux
+
+LaTeX Warning: Label `overflow' multiply defined.
+
+
+LaTeX Warning: Label `overflow' multiply defined.
+
+)
 \openout1 = `"distributed alg research.aux"'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-
-(/usr/local/texlive/2013/texmf-dist/tex/context/base/supp-pdf.mkii
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+ (/usr/local/texlive/2013/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count107
 \scratchdimen=\dimen121
@@ -301,12 +307,12 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Try loading font information for U+msa on input line 24.
+LaTeX Font Info:    Try loading font information for U+msa on input line 25.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 24.
+LaTeX Font Info:    Try loading font information for U+msb on input line 25.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -319,77 +325,94 @@ LaTeX Warning: No \author given.
 
 {/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 
-LaTeX Warning: Citation `Brown:2007' on page 2 undefined on input line 51.
+LaTeX Warning: Citation `Brown:2007' on page 2 undefined on input line 52.
 
 
-LaTeX Warning: Citation `Chockler:2008' on page 2 undefined on input line 51.
+LaTeX Warning: Citation `Chockler:2008' on page 2 undefined on input line 52.
 
 
-LaTeX Warning: Citation `Gao:2012' on page 2 undefined on input line 51.
+LaTeX Warning: Citation `Gao:2012' on page 2 undefined on input line 52.
 
 [2]
 
-LaTeX Warning: Citation `Schneider:1990' on page 3 undefined on input line 59.
+LaTeX Warning: Citation `Schneider:1990' on page 3 undefined on input line 60.
 
 
-LaTeX Warning: Citation `Kuhn:2008' on page 3 undefined on input line 61.
+LaTeX Warning: Citation `Kuhn:2008' on page 3 undefined on input line 62.
 
 [3]
 
-LaTeX Warning: Citation `Brown:2007' on page 4 undefined on input line 63.
+LaTeX Warning: Citation `Brown:2007' on page 4 undefined on input line 64.
 
 
-LaTeX Warning: Citation `Chockler:2008' on page 4 undefined on input line 63.
+LaTeX Warning: Citation `Chockler:2008' on page 4 undefined on input line 64.
 
 
-LaTeX Warning: Citation `Gao:2012' on page 4 undefined on input line 63.
+LaTeX Warning: Citation `Gao:2012' on page 4 undefined on input line 64.
 
 
-LaTeX Warning: Citation `Lynch:1996' on page 4 undefined on input line 75.
+LaTeX Warning: Citation `Lynch:1996' on page 4 undefined on input line 76.
 
 
-LaTeX Warning: Citation `Kuhn:2010' on page 4 undefined on input line 75.
+LaTeX Warning: Citation `Kuhn:2010' on page 4 undefined on input line 76.
 
-[4] [5]
+[4] [5] [6]
 Overfull \hbox (4.56454pt too wide) in paragraph at lines 119--119
 []\T1/cmr/bx/n/12 Simultaneous Ac-ti-va-tion Re-li-able Broad-cast Al-go-rithm 
 
  []
 
 
-LaTeX Warning: Citation `Lynch:1996' on page 6 undefined on input line 121.
+LaTeX Warning: Citation `Lynch:1996' on page 7 undefined on input line 121.
 
-[6] [7] [8]
-Overfull \hbox (4.56454pt too wide) in paragraph at lines 156--156
+[7] [8] [9]
+Overfull \hbox (4.56454pt too wide) in paragraph at lines 158--158
 []\T1/cmr/bx/n/12 Simultaneous Ac-ti-va-tion Re-li-able Broad-cast Al-go-rithm 
 
  []
 
-[9] [10] [11] [12] [13] [14] [15] [16] [17]
-Overfull \hbox (38.85071pt too wide) in paragraph at lines 478--482
-\T1/cmr/m/n/10 and de-ac-ti-va-tion re-li-able broad-cast al-go-rithm sat-is-fi
-es the live-ness prop-erty(Lemma 6.26[]),
- []
+[10] [11] [12] [13] [14] [15] [16] [17] [18]
 
+LaTeX Warning: Citation `Kuhn:2010' on page 19 undefined on input line 500.
 
-LaTeX Warning: Citation `Kuhn:2010' on page 18 undefined on input line 498.
+[19] [20] [21] <avg_msg_lat_simul_act.png, id=85, 578.16pt x 433.62pt>
+File: avg_msg_lat_simul_act.png Graphic file (type png)
 
-[18] [19] [20] [21] (./distributed alg research.aux)
+<use avg_msg_lat_simul_act.png>
+Package pdftex.def Info: avg_msg_lat_simul_act.png used on input line 577.
+(pdftex.def)             Requested size: 256.0748pt x 192.05052pt.
+
+<avg_goodput_simul_act.png, id=87, 578.16pt x 433.62pt>
+File: avg_goodput_simul_act.png Graphic file (type png)
+
+<use avg_goodput_simul_act.png>
+Package pdftex.def Info: avg_goodput_simul_act.png used on input line 584.
+(pdftex.def)             Requested size: 256.0748pt x 192.05052pt.
+
+<avg_queue_simul_act.png, id=88, 578.16pt x 433.62pt>
+File: avg_queue_simul_act.png Graphic file (type png)
+
+<use avg_queue_simul_act.png>
+Package pdftex.def Info: avg_queue_simul_act.png used on input line 591.
+(pdftex.def)             Requested size: 256.0748pt x 192.05052pt.
+ [22] [23 <./avg_msg_lat_simul_act.png> <./avg_goodput_simul_act.png>] [24 <./a
+vg_queue_simul_act.png>]
+(./distributed alg research.aux)
 
 LaTeX Warning: There were undefined references.
 
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 4661 strings out of 493315
- 61807 string characters out of 6137904
- 151241 words of memory out of 5000000
- 8037 multiletter control sequences out of 15000+600000
+ 4678 strings out of 493315
+ 62243 string characters out of 6137904
+ 150290 words of memory out of 5000000
+ 8050 multiletter control sequences out of 15000+600000
  17601 words of font info for 50 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 38i,6n,26p,1597b,199s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,6n,26p,1637b,231s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2013/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
 </usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
 /usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></u
@@ -407,10 +430,10 @@ e/2013/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/texlive/
 /texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2013/t
 exmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/local/texlive/2013/tex
 mf-dist/fonts/type1/public/cm-super/sfti1000.pfb>
-Output written on "distributed alg research.pdf" (21 pages, 292238 bytes).
+Output written on "distributed alg research.pdf" (24 pages, 477312 bytes).
 PDF statistics:
- 137 PDF objects out of 1000 (max. 8388607)
- 97 compressed objects within 1 object stream
+ 154 PDF objects out of 1000 (max. 8388607)
+ 104 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 16 words of extra memory for PDF output out of 10000 (max. 10000000)
 
