@@ -53,7 +53,7 @@ This thesis describes and proves correct three new implementations of a reliable
 
 The first implementation we provide of a reliable broadcast service assumes that all nodes in the network activate before the same global round and remain active for the duration of the execution (Simultaneous Activation). The second implementation allows nodes to activate before different rounds of execution but assumes that after a node activates, it remains active for the remainder of the execution (Staggered Activation).  The third implementation assumes nodes can activate or deactivate before each and every round (Variable Activation and Deactivation). While the first two sets of assumptions do not allow for significant changes to the network topology and participant set during execution, they demonstrate the best-case efficiency and performance in a reasonably well-behaved \em dynamic distributed networks\em. While the third implementation correctly implements reliable broadcast for all three sets of assumptions about node behavior related to activations and deactivations, it does so with a worse average case performance than both the first and second implementation. 
 
-The major contributions of this thesis are as follows. First, it provides a correct and useful definition for the problem of reliable broadcast in \em dynamic distributed networks\em. Second, it describes and proves correct three novel algorithms for reliable broadcast in \em dynamic distributed networks\em given the different sets of assumptions regarding node activation and deactivation during execution. Third, these algorithms use general strategies that will be useful for the development of other algorithms for \em dynamic distributed networks\em. Finally, this thesis provides simulation results for the algorithms in both synthetic and real world networks to explore average case performance beyond the formally proven worst-case bounds.
+The major contributions of this thesis are as follows. First, it provides a correct and useful definition for reliable broadcast in \em dynamic distributed networks\em. Second, it describes and proves correct three novel algorithms for reliable broadcast in \em dynamic distributed networks\em given the different sets of assumptions regarding node activation and deactivation during execution. Third, these algorithms use general strategies that will be useful for the development of other algorithms for \em dynamic distributed networks\em. Finally, this thesis provides simulation results for the algorithms in both synthetic and real world networks to explore average case performance beyond the formally proven worst-case bounds.
 
 \section{Related Work}
 
@@ -559,39 +559,68 @@ The remainder of this section is organized as follows. We begin by describing th
 
 \subsection{Simulator Design and Architecture}
 
-The simulator is built in Python using SimPy, a discrete-event simulator. SimPy makes it simple to create and simulate processes, which interact with each other through shared resources The system is divided into three modules, the overlord, the nodes and the nodes' environments. 
+The simulator is built in Python using SimPy, a discrete-event simulator. SimPy makes it simple to create and simulate processes, which interact with each other through shared resources. The system is divided into three modules, the overlord, the nodes and the nodes' environments. 
 
 The overlord handles all the inter-node communication along with the activations and deactivations of nodes. This design decision ensures that nodes have no access to no information about their neighbors or rounds of activation or deactivation. The overlord can be reused to handle the inter-node communication and activation and deactivation of nodes for any other algorithm that runs in the synchronous broadcast model. It contains no code that is specific to any of our reliable broadcast algorithms. The overlord keeps track of global rounds and tells every node when to begin each round. If a node is not active for a round $r$, the overlord simply never tells the node to begin round $r$. Every node sends its broadcast messages for that round to the overlord, which sends a copy to each of its active neighbors. 
 
-While there is only one overlord per simulation, there are many nodes for each simulation. Each node interacts with the overlord as described above. Each node also has a connection to its own environment. The environment simulates the environment from a reliable broadcast service. A node and its environment may only interact using the \textit{send}, \textit{receive} or \textit{acknowledge} commands. When an environment is not waiting on an \textit{acknowledge} command, it will wait a random number of rounds from a range before sending a new message to the node using the \textit{send} command. We call the upper range on the number of rounds the environment ``delay''.
+While there is only one overlord per simulation, there are many nodes for each simulation. Each node interacts with the overlord as described above. Each node also has a connection to its own environment. The environment simulates the environment from a reliable broadcast service. A node and its environment may only interact using the \textit{send}, \textit{receive} or \textit{acknowledge} commands. When an environment is not waiting on an \textit{acknowledge} command, it will wait a random number of rounds from a range before sending a new message to the node using the \textit{send} command. We call the upper range on the number of rounds the environment's ``delay''.
 
 
 \subsection{Data Sets}
 
+As one of our main goals of the simulations is to examine the effect of topology on the performance of our algorithms, we predominately used seven small network graphs of varying topology for our experiments. The topologies used include a clique, a lattice, a random graph, a ring, a small world, a star and a tree. With the exception of the lattice topology, which had nine nodes, all of these topologies had ten nodes.
+
+In addition to experimenting with networks of varying topology, we also ran experiments with a random graph topology network of varying network size. We ran the simulation for networks of size 50, 100 and 150. We ran these simulations to understand the effect of the network size on the performance of our algorithms.
 
 
 \subsection{Results}
 
-\begin{figure}[ht]
-\centering
-\includegraphics[width=90mm]{avg_msg_lat_simul_act.png}
-\caption{Message Latency for various topologies}
-\label{overflow}
-\end{figure}
+In this section, we examine the effect of certain variables on the performances of our algorithms and we compare the performances of our algorithms to each other. First, we examine the effect of network topology on the goodput of the simultaneous activation algorithm and identify which metrics influence goodput. Next, we compare the performance of each of our algorithms with respect to goodput and message complexity in a small network. Finally, we compare the scalability of our algorithms by examining the performance metrics of our algorithms on networks of 50, 100 and 150 nodes.
+
+\subsubsection{Varying Topologies}
+
+The first graph we consider shows the performance of the simultaneous activation algorithm in networks of varying topology. The environment waits a number of rounds, which is chosen uniformly at random from the range of 5 to the delay of the environment, before passing a message to the node. We map the delay used for each execution on the x-axis of this graph. The lower the delay, the more messages will need to be disseminated and the more the network will become congested. The y-axis is the goodput, which is the total number of received messages passed to the environment during the simulation execution, which in this case lasted 1000 rounds. Each topology is plotted on the graph and defined in the legend. In the graph of goodput versus delay for Simulation Activation with regard to topology (figure~\ref{VaryingTopologyGoodput}), it is clear that the Simultaneous Activation algorithm performs much better on some topologies than others. In particular, it performs best on the clique and star topologies while it performs worst on the ring topology. This is logical because the speed of message dissemination is related to the diameter of the graph and clique and star graphs have much smaller diameters relative to size than do ring graphs.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=90mm]{avg_goodput_simul_act.png}
+\includegraphics[width=90mm]{all_topologies_goodput.png}
 \caption{Goodput for various topologies}
-\label{overflow}
+\label{VaryingTopologyGoodput}
 \end{figure}
+
+\subsubsection{Algorithm Comparison}
+
+Another goal of our simulation is to differentiate between our three algorithms. This is important because each set of assumptions is a strict superset of the previous set of assumptions so the varied activation and deactivation algorithm will work not only for its set of assumptions but also for the set of assumptions for both the staggered activation algorithm and the simultaneous activation algorithm. As a result, if the earlier algorithms do not offer some type of performance benefit relative to the later algorithms, they are not useful.
+
+The following graph (figure~\ref{AllAlgorithmsGoodput}) plots the goodput of each algorithm when run on an identical network topology under the assumptions of simultaneous activation. Similar to the above graph (figure~\ref{VaryingTopologyGoodput}), the delay of the environment is the x-axis and the goodput is the y-axis. The simultaneous activation algorithm performs noticeably better than the staggered activation algorithm, which performs better than the varied activation and deactivation algorithm.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=90mm]{avg_queue_simul_act.png}
-\caption{Queue Size for various topologies}
-\label{overflow}
+\includegraphics[width=90mm]{all_algorithms_goodput.png}
+\caption{Goodput for all Algorithms}
+\label{AllAlgorithmsGoodput}
 \end{figure}
+
+Next, we examine the message complexity of each of the algorithms under the same assumptions as above (figure~\ref{AllAlgorithmsMessageComplexity}). The message complexity of the varied activation and deactivation algorithm is much higher than that of the staggered activation algorithm, which is much higher than that of the simultaneous activation algorithm. The increased message complexity of the varied activation and deactivtion algorithm is logical because the algorithm is a variant of message flooding, which is known for its high message complexity.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=90mm]{all_algorithms_message_complexity.png}
+\caption{Message Complexity for all Algorithms}
+\label{AllAlgorithmsMessageComplexity}
+\end{figure}
+
+
+\subsubsection{Scalability}
+
+In order to demonstrate the practicality of our algorithms for larger networks, we ran simulations of the simultaneous activation, staggered activation and varied activation and deactivation algorithms on networks of size 50, 100 and 150.
+
+
+
+
+
+
+
 
 
 \subsection{Discussion}
